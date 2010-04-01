@@ -8,6 +8,7 @@ import itertools.iterator.GroupingIterator;
 import itertools.iterator.MappingIterator;
 import itertools.iterator.MergingIterator;
 import itertools.iterator.RepeatingIterator;
+import itertools.iterator.SlicingIterator;
 import itertools.iterator.ZippingIterator;
 
 import java.util.Arrays;
@@ -26,7 +27,8 @@ import java.util.List;
 public class Itertools {
 
   /**
-   * Creates an Iterable to chain the provided iterator collection together.
+   * Creates an Iterable to chain the provided iterator collection together. See
+   * {@link ChainedIterator}.
    * 
    * @param <E>
    * @param iterators
@@ -49,6 +51,7 @@ public class Itertools {
 
   /**
    * Creates an Iterable that cycles through the provided iterator indefinitely.
+   * See {@link CyclingIterator}.
    * 
    * @param <E>
    * @param iterator
@@ -62,7 +65,7 @@ public class Itertools {
    * Creates an Iterable over sequential groups of elements in the provided
    * iterator. The {@link Grouper.group(Object, Object)} function defines
    * whether adjascent elements in the iterator belong in the same group.
-   * Similar to unix's <tt>uniq</tt> command.
+   * Similar to unix's <tt>uniq</tt> command. See {@link GroupingIterator}.
    * 
    * @param <E>
    * @param iterator
@@ -81,7 +84,7 @@ public class Itertools {
    * iterator, limiting the maximum group size to <tt>maxGroupSize</tt>. The
    * {@link Grouper.group(Object, Object)} function defines whether adjascent
    * elements in the iterator belong in the same group. Similar to unix's
-   * <tt>uniq</tt> command. <br/>
+   * <tt>uniq</tt> command. See {@link GroupingIterator}.<br/>
    * Note: limiting the maximum group size can be useful to limit memory
    * consumption when the underlying iterator is large.
    * 
@@ -108,7 +111,7 @@ public class Itertools {
 
   /**
    * Creates an Iterable over the input, applying the {@link Mapper.map(Object)}
-   * function to each element.
+   * function to each element. See {@link MappingIterator}.
    * 
    * @param <I>
    *          Input type.
@@ -133,7 +136,8 @@ public class Itertools {
   /**
    * Merges the provided iterators so that the resulting Iterable is in sorted
    * order according to the comparator. It is assumed that the provided
-   * iterators are in sorted order.
+   * iterators are in sorted order. See {@link MergingIterator} and
+   * {@link #merge(Collection)} for merging by the natural ordering.
    * 
    * @param <E>
    * @param iterators
@@ -150,7 +154,8 @@ public class Itertools {
   /**
    * Merges the provided iterators so that the resulting Iterable is in sorted
    * order according to the object's natrual order. It is assumed that the
-   * provided iterators are in sorted order.
+   * provided iterators are in sorted order. See {@link MergingIterator} and
+   * {@link #merge(Collection, Comparator)}.
    * 
    * @param <E>
    * @param iterators
@@ -181,7 +186,8 @@ public class Itertools {
   }
 
   /**
-   * Creates an iterable always repeating the provided item.
+   * Creates an iterable always repeating the provided item. See
+   * {@link RepeatingIterator}.
    * 
    * @param <E>
    *          The item type.
@@ -194,9 +200,26 @@ public class Itertools {
   }
 
   /**
+   * Creates an iterable selecting subsets of the provided iterator. See
+   * {@link SlicingIterator}.
+   * 
+   * @param <E>
+   * @param it
+   * @param start
+   * @param stop
+   * @param by
+   * @return
+   */
+  public static <E> Iterable<E> slice(Iterator<E> it, int start, int stop,
+      int by) {
+    return new SimpleIterable<E>(new SlicingIterator<E>(it, start, stop, by));
+  }
+
+  /**
    * Creates an iterable to iterate over the provided iterators in parallel.
    * Each return List contains the next element from each of the provided
-   * iterators in order, or null if that iterator is exhausted.
+   * iterators in order, or null if that iterator is exhausted. See
+   * {@link ZippingIterator}.
    * 
    * @param <E>
    * @param iterators

@@ -21,5 +21,4 @@ public class SimpleIterable<T> implements Iterable<T> {
   public Iterator<T> iterator() {
     return it;
   }
-
 }
