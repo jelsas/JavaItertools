@@ -7,6 +7,7 @@ import itertools.functions.Mapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,11 +20,14 @@ public class ItertoolsTest {
   String[][] data = { { "a", "b", "c" }, { "1", "2", "3" },
       { "w", "x", "y", "z" } };
   List<Iterator<String>> iters;
+  int totalNumElements;
 
   @Before
   public void setUp() throws Exception {
+    totalNumElements = 0;
     iters = new ArrayList<Iterator<String>>(data.length);
     for (int i = 0; i < data.length; ++i) {
+      totalNumElements += data[i].length;
       iters.add(Arrays.asList(data[i]).iterator());
     }
   }
@@ -39,6 +43,7 @@ public class ItertoolsTest {
       assertEquals(chained.get(idx), s);
       ++idx;
     }
+    assertEquals(totalNumElements, idx);
   }
 
   @SuppressWarnings("unchecked")
@@ -53,6 +58,7 @@ public class ItertoolsTest {
       assertEquals(chained.get(idx), s);
       ++idx;
     }
+    assertEquals(totalNumElements, idx);
   }
 
   @Test
@@ -103,6 +109,24 @@ public class ItertoolsTest {
       assertEquals(data[0][idx].toUpperCase(), s);
       ++idx;
     }
+    assertEquals(data[0].length, idx);
+  }
+
+  @Test
+  public void testMerge() {
+    ArrayList<String> all = new ArrayList<String>();
+    for (String[] ss : data) {
+      for (String s : ss) {
+        all.add(s);
+      }
+    }
+    Collections.sort(all);
+    int idx = 0;
+    for (String s : merge(iters)) {
+      assertEquals(all.get(idx), s);
+      idx++;
+    }
+    assertEquals(totalNumElements, idx);
   }
 
   @Test

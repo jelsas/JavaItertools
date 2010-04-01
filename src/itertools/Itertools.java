@@ -6,11 +6,13 @@ import itertools.iterator.ChainedIterator;
 import itertools.iterator.CyclingIterator;
 import itertools.iterator.GroupingIterator;
 import itertools.iterator.MappingIterator;
+import itertools.iterator.MergingIterator;
 import itertools.iterator.RepeatingIterator;
 import itertools.iterator.ZippingIterator;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -126,6 +128,56 @@ public class Itertools {
         return mapper.map(in);
       }
     });
+  }
+
+  /**
+   * Merges the provided iterators so that the resulting Iterable is in sorted
+   * order according to the comparator. It is assumed that the provided
+   * iterators are in sorted order.
+   * 
+   * @param <E>
+   * @param iterators
+   *          The underlying iterators.
+   * @param comparator
+   *          The comparator.
+   * @return An merged iterable.
+   */
+  public static <E> Iterable<E> merge(Collection<Iterator<E>> iterators,
+      Comparator<E> comparator) {
+    return new SimpleIterable<E>(new MergingIterator<E>(iterators, comparator));
+  }
+
+  /**
+   * Merges the provided iterators so that the resulting Iterable is in sorted
+   * order according to the object's natrual order. It is assumed that the
+   * provided iterators are in sorted order.
+   * 
+   * @param <E>
+   * @param iterators
+   *          The underlying iterators.
+   * @return A merged iterable.
+   */
+  public static <E extends Comparable<E>> Iterable<E> merge(
+      Collection<Iterator<E>> iterators) {
+    Comparator<E> comp = new Comparator<E>() {
+      public int compare(E o1, E o2) {
+        return o1.compareTo(o2);
+      }
+    };
+
+    return merge(iterators, comp);
+  }
+
+  /**
+   * See {@link #merge(Collection)}
+   * 
+   * @param <E>
+   * @param iterators
+   * @return
+   */
+  public static <E extends Comparable<E>> Iterable<E> merge(
+      Iterator<E>... iterators) {
+    return merge(Arrays.asList(iterators));
   }
 
   /**
