@@ -15,98 +15,153 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Utility static classes.
+ * A collection of static methods to aid creation of specialized iterators. Most
+ * of these correspond to functions defined in Python's itertools library.
  * 
  * @author jelsas
  * 
  */
 public class Itertools {
-  private static <E> Iterator<E> chainI(Collection<Iterator<E>> iterators) {
-    return new ChainedIterator<E>(iterators);
-  }
 
+  /**
+   * Creates an Iterable to chain the provided iterator collection together.
+   * 
+   * @param <E>
+   * @param iterators
+   * @return
+   */
   public static <E> Iterable<E> chain(Collection<Iterator<E>> iterators) {
-    return new SimpleIterable<E>(chainI(iterators));
+    return new SimpleIterable<E>(new ChainedIterator<E>(iterators));
   }
 
-  private static <E> Iterator<E> chainI(Iterator<E>... iterators) {
-    return chainI(Arrays.asList(iterators));
-  }
-
+  /**
+   * See {@link #chain(Collection)}.
+   * 
+   * @param <E>
+   * @param iterators
+   * @return
+   */
   public static <E> Iterable<E> chain(Iterator<E>... iterators) {
-    return new SimpleIterable<E>(chainI(iterators));
+    return chain(Arrays.asList(iterators));
   }
 
-  private static <E> Iterator<E> cycleI(Iterator<E> iterator) {
-    return new CyclingIterator<E>(iterator);
-  }
-
+  /**
+   * Creates an Iterable that cycles through the provided iterator indefinitely.
+   * 
+   * @param <E>
+   * @param iterator
+   * @return
+   */
   public static <E> Iterable<E> cycle(Iterator<E> iterator) {
-    return new SimpleIterable<E>(cycleI(iterator));
+    return new SimpleIterable<E>(new CyclingIterator<E>(iterator));
   }
 
-  private static <E> Iterator<Iterator<E>> groupbyI(Iterator<E> iterator,
+  /**
+   * Creates an Iterable over sequential groups of elements in the provided
+   * iterator. The {@link Grouper.group(Object, Object)} function defines
+   * whether adjascent elements in the iterator belong in the same group.
+   * Similar to unix's <tt>uniq</tt> command.
+   * 
+   * @param <E>
+   * @param iterator
+   *          The underlying iterator.
+   * @param grouper
+   *          The grouping function.
+   * @return An iterator over groups.
+   */
+  public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper) {
-    return groupbyI(iterator, grouper, Integer.MAX_VALUE);
+    return groupby(iterator, grouper, Integer.MAX_VALUE);
   }
 
-  private static <E> Iterator<Iterator<E>> groupbyI(Iterator<E> iterator,
+  /**
+   * Creates an Iterable over sequential groups of elements in the provided
+   * iterator, limiting the maximum group size to <tt>maxGroupSize</tt>. The
+   * {@link Grouper.group(Object, Object)} function defines whether adjascent
+   * elements in the iterator belong in the same group. Similar to unix's
+   * <tt>uniq</tt> command. <br/>
+   * Note: limiting the maximum group size can be useful to limit memory
+   * consumption when the underlying iterator is large.
+   * 
+   * @param <E>
+   * @param iterator
+   *          The underlying iterator.
+   * @param grouper
+   *          The underlying iterator.
+   * @param maxGroupSize
+   *          The maximum size of a group. If a group exceeds this size, it will
+   *          be split into more than one group.
+   * @return
+   */
+  public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper, int maxGroupSize) {
-    return new GroupingIterator<E>(iterator, maxGroupSize) {
+    return new SimpleIterable<Iterator<E>>(new GroupingIterator<E>(iterator,
+        maxGroupSize) {
       @Override
       public boolean group(E e1, E e2) {
         return grouper.group(e1, e2);
       }
-    };
+    });
   }
 
-  public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
-      final Grouper<E> grouper) {
-    return new SimpleIterable<Iterator<E>>(groupbyI(iterator, grouper));
-  }
-
-  public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
-      final Grouper<E> grouper, int maxGroupSize) {
-    return new SimpleIterable<Iterator<E>>(groupbyI(iterator, grouper,
-        maxGroupSize));
-  }
-
-  private static <I, O> Iterator<O> mapI(Iterator<I> iterator,
+  /**
+   * Creates an Iterable over the input, applying the {@link Mapper.map(Object)}
+   * function to each element.
+   * 
+   * @param <I>
+   *          Input type.
+   * @param <O>
+   *          Output type.
+   * @param iterator
+   *          Underlying itertor over the input type.
+   * @param mapper
+   *          Mapping function.
+   * @return An iterator over the output type.
+   */
+  public static <I, O> Iterable<O> map(Iterator<I> iterator,
       final Mapper<I, O> mapper) {
-    return new MappingIterator<I, O>(iterator) {
+    return new SimpleIterable<O>(new MappingIterator<I, O>(iterator) {
       @Override
       public O map(I in) {
         return mapper.map(in);
       }
-    };
+    });
   }
 
-  public static <I, O> Iterable<O> map(Iterator<I> iterator,
-      final Mapper<I, O> mapper) {
-    return new SimpleIterable<O>(mapI(iterator, mapper));
-  }
-
-  private static <E> Iterator<E> repeatI(E item) {
-    return new RepeatingIterator<E>(item);
-  }
-
+  /**
+   * Creates an iterable always repeating the provided item.
+   * 
+   * @param <E>
+   *          The item type.
+   * @param item
+   *          The item.
+   * @return
+   */
   public static <E> Iterable<E> repeat(E item) {
-    return new SimpleIterable<E>(repeatI(item));
+    return new SimpleIterable<E>(new RepeatingIterator<E>(item));
   }
 
-  private static <E> Iterator<List<E>> zipI(Collection<Iterator<E>> iterators) {
-    return new ZippingIterator<E>(iterators);
-  }
-
+  /**
+   * Creates an iterable to iterate over the provided iterators in parallel.
+   * Each return List contains the next element from each of the provided
+   * iterators in order, or null if that iterator is exhausted.
+   * 
+   * @param <E>
+   * @param iterators
+   * @return
+   */
   public static <E> Iterable<List<E>> zip(Collection<Iterator<E>> iterators) {
-    return new SimpleIterable<List<E>>(zipI(iterators));
+    return new SimpleIterable<List<E>>(new ZippingIterator<E>(iterators));
   }
 
-  private static <E> Iterator<List<E>> zipI(Iterator<E>... iterators) {
-    return new ZippingIterator<E>(Arrays.asList(iterators));
-  }
-
+  /**
+   * See {@link #zip(Collection)}.
+   * 
+   * @param <E>
+   * @param iterators
+   * @return
+   */
   public static <E> Iterable<List<E>> zip(Iterator<E>... iterators) {
-    return new SimpleIterable<List<E>>(zipI(iterators));
+    return zip(Arrays.asList(iterators));
   }
 }
