@@ -72,11 +72,6 @@ public class ItertoolsTest {
 
   @Test
   public void testGroupby() {
-    ArrayList<String> chained = new ArrayList<String>();
-    for (String[] s : data) {
-      chained.addAll(Arrays.asList(s));
-    }
-
     Grouper<String> grouper = new Grouper<String>() {
       public boolean group(String e1, String e2) {
         char c1 = e1.charAt(0), c2 = e2.charAt(0);
@@ -86,7 +81,7 @@ public class ItertoolsTest {
     };
 
     int i = 0;
-    for (Iterator<String> ss : groupby(chained.iterator(), grouper)) {
+    for (Iterator<String> ss : groupby(chain(iters).iterator(), grouper)) {
       int j = 0;
       while (ss.hasNext()) {
         String s = ss.next();
