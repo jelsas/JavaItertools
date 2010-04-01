@@ -47,7 +47,12 @@ public class Itertools {
 
   private static <E> Iterator<Iterator<E>> groupbyI(Iterator<E> iterator,
       final Grouper<E> grouper) {
-    return new GroupingIterator<E>(iterator) {
+    return groupbyI(iterator, grouper, Integer.MAX_VALUE);
+  }
+
+  private static <E> Iterator<Iterator<E>> groupbyI(Iterator<E> iterator,
+      final Grouper<E> grouper, int maxGroupSize) {
+    return new GroupingIterator<E>(iterator, maxGroupSize) {
       @Override
       public boolean group(E e1, E e2) {
         return grouper.group(e1, e2);
@@ -58,6 +63,12 @@ public class Itertools {
   public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper) {
     return new SimpleIterable<Iterator<E>>(groupbyI(iterator, grouper));
+  }
+
+  public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
+      final Grouper<E> grouper, int maxGroupSize) {
+    return new SimpleIterable<Iterator<E>>(groupbyI(iterator, grouper,
+        maxGroupSize));
   }
 
   private static <I, O> Iterator<O> mapI(Iterator<I> iterator,
