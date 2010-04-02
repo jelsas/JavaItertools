@@ -81,7 +81,7 @@ public class ItertoolsTest {
     };
 
     int i = 0;
-    for (Iterator<String> ss : groupby(chain(iters).iterator(), grouper)) {
+    for (Iterator<String> ss : groupby(chain(iters), grouper)) {
       int j = 0;
       while (ss.hasNext()) {
         String s = ss.next();

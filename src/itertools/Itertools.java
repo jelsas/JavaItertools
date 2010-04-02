@@ -34,8 +34,8 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> Iterable<E> chain(Collection<Iterator<E>> iterators) {
-    return new SimpleIterable<E>(new ChainedIterator<E>(iterators));
+  public static <E> IterableIterator<E> chain(Collection<Iterator<E>> iterators) {
+    return new IterableIterator<E>(new ChainedIterator<E>(iterators));
   }
 
   /**
@@ -45,7 +45,7 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> Iterable<E> chain(Iterator<E>... iterators) {
+  public static <E> IterableIterator<E> chain(Iterator<E>... iterators) {
     return chain(Arrays.asList(iterators));
   }
 
@@ -57,8 +57,8 @@ public class Itertools {
    * @param iterator
    * @return
    */
-  public static <E> Iterable<E> cycle(Iterator<E> iterator) {
-    return new SimpleIterable<E>(new CyclingIterator<E>(iterator));
+  public static <E> IterableIterator<E> cycle(Iterator<E> iterator) {
+    return new IterableIterator<E>(new CyclingIterator<E>(iterator));
   }
 
   /**
@@ -74,7 +74,7 @@ public class Itertools {
    *          The grouping function.
    * @return An iterator over groups.
    */
-  public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
+  public static <E> IterableIterator<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper) {
     return groupby(iterator, grouper, Integer.MAX_VALUE);
   }
@@ -98,9 +98,9 @@ public class Itertools {
    *          be split into more than one group.
    * @return
    */
-  public static <E> Iterable<Iterator<E>> groupby(Iterator<E> iterator,
+  public static <E> IterableIterator<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper, int maxGroupSize) {
-    return new SimpleIterable<Iterator<E>>(new GroupingIterator<E>(iterator,
+    return new IterableIterator<Iterator<E>>(new GroupingIterator<E>(iterator,
         maxGroupSize) {
       @Override
       public boolean group(E e1, E e2) {
@@ -123,9 +123,9 @@ public class Itertools {
    *          Mapping function.
    * @return An iterator over the output type.
    */
-  public static <I, O> Iterable<O> map(Iterator<I> iterator,
+  public static <I, O> IterableIterator<O> map(Iterator<I> iterator,
       final Mapper<I, O> mapper) {
-    return new SimpleIterable<O>(new MappingIterator<I, O>(iterator) {
+    return new IterableIterator<O>(new MappingIterator<I, O>(iterator) {
       @Override
       public O map(I in) {
         return mapper.map(in);
@@ -146,9 +146,10 @@ public class Itertools {
    *          The comparator.
    * @return An merged iterable.
    */
-  public static <E> Iterable<E> merge(Collection<Iterator<E>> iterators,
-      Comparator<E> comparator) {
-    return new SimpleIterable<E>(new MergingIterator<E>(iterators, comparator));
+  public static <E> IterableIterator<E> merge(
+      Collection<Iterator<E>> iterators, Comparator<E> comparator) {
+    return new IterableIterator<E>(
+        new MergingIterator<E>(iterators, comparator));
   }
 
   /**
@@ -162,7 +163,7 @@ public class Itertools {
    *          The underlying iterators.
    * @return A merged iterable.
    */
-  public static <E extends Comparable<E>> Iterable<E> merge(
+  public static <E extends Comparable<E>> IterableIterator<E> merge(
       Collection<Iterator<E>> iterators) {
     Comparator<E> comp = new Comparator<E>() {
       public int compare(E o1, E o2) {
@@ -180,7 +181,7 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E extends Comparable<E>> Iterable<E> merge(
+  public static <E extends Comparable<E>> IterableIterator<E> merge(
       Iterator<E>... iterators) {
     return merge(Arrays.asList(iterators));
   }
@@ -195,8 +196,8 @@ public class Itertools {
    *          The item.
    * @return
    */
-  public static <E> Iterable<E> repeat(E item) {
-    return new SimpleIterable<E>(new RepeatingIterator<E>(item));
+  public static <E> IterableIterator<E> repeat(E item) {
+    return new IterableIterator<E>(new RepeatingIterator<E>(item));
   }
 
   /**
@@ -205,14 +206,18 @@ public class Itertools {
    * 
    * @param <E>
    * @param it
+   *          The underlying iterator.
    * @param start
+   *          The start position. &lt;0 starts at zero.
    * @param stop
+   *          The stop position. &lt;0 iterates to the end of the <tt>it</it>.
    * @param by
+   *          The step size. &lt;0 equivalent to a step size of 1.
    * @return
    */
-  public static <E> Iterable<E> slice(Iterator<E> it, int start, int stop,
-      int by) {
-    return new SimpleIterable<E>(new SlicingIterator<E>(it, start, stop, by));
+  public static <E> IterableIterator<E> slice(Iterator<E> it, int start,
+      int stop, int by) {
+    return new IterableIterator<E>(new SlicingIterator<E>(it, start, stop, by));
   }
 
   /**
@@ -225,8 +230,9 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> Iterable<List<E>> zip(Collection<Iterator<E>> iterators) {
-    return new SimpleIterable<List<E>>(new ZippingIterator<E>(iterators));
+  public static <E> IterableIterator<List<E>> zip(
+      Collection<Iterator<E>> iterators) {
+    return new IterableIterator<List<E>>(new ZippingIterator<E>(iterators));
   }
 
   /**
@@ -236,7 +242,7 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> Iterable<List<E>> zip(Iterator<E>... iterators) {
+  public static <E> IterableIterator<List<E>> zip(Iterator<E>... iterators) {
     return zip(Arrays.asList(iterators));
   }
 }
