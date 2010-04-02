@@ -3,6 +3,7 @@ package itertools;
 import itertools.functions.Grouper;
 import itertools.functions.Mapper;
 import itertools.iterator.ChainedIterator;
+import itertools.iterator.CountingIterator;
 import itertools.iterator.CyclingIterator;
 import itertools.iterator.GroupingIterator;
 import itertools.iterator.MappingIterator;
@@ -11,6 +12,7 @@ import itertools.iterator.RepeatingIterator;
 import itertools.iterator.SlicingIterator;
 import itertools.iterator.ZippingIterator;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -47,6 +49,26 @@ public class Itertools {
    */
   public static <E> IterableIterator<E> chain(Iterator<E>... iterators) {
     return chain(Arrays.asList(iterators));
+  }
+
+  /**
+   * Creates an Iterable that counts forever. See {@link CountingIterator}.
+   * 
+   * @param start
+   *          Starting number.
+   * @return
+   */
+  public static IterableIterator<Integer> count(int start) {
+    return new IterableIterator<Integer>(new CountingIterator(start));
+  }
+
+  /**
+   * Creates an Iterable that counts forever. See {@link CountingIterator}.
+   * 
+   * @return
+   */
+  public static IterableIterator<Integer> count() {
+    return new IterableIterator<Integer>(new CountingIterator());
   }
 
   /**
@@ -107,6 +129,28 @@ public class Itertools {
         return grouper.group(e1, e2);
       }
     });
+  }
+
+  /**
+   * Terse utility method for creating an IterableIterator over a collection.
+   * 
+   * @param <E>
+   * @param array
+   * @return
+   */
+  public static <E> IterableIterator<E> i(Collection<E> c) {
+    return new IterableIterator<E>(c);
+  }
+
+  /**
+   * Terse utility method for creating an IterableIterator over an array.
+   * 
+   * @param <E>
+   * @param array
+   * @return
+   */
+  public static <E> IterableIterator<E> i(E[] array) {
+    return new IterableIterator<E>(array);
   }
 
   /**

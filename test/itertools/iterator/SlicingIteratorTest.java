@@ -31,30 +31,36 @@ public class SlicingIteratorTest {
     int start = 3;
     SlicingIterator<String> it = new SlicingIterator<String>(iter, start, -1,
         -1);
-    for (int i = start; i < data.length; ++i) {
+    int i;
+    for (i = start; i < data.length; ++i) {
       assertTrue(it.hasNext());
       assertEquals(data[i], it.next());
     }
+    assertEquals(data.length, i);
   }
 
   @Test
   public void testSlicingIterator_stop() {
     int stop = 5;
     SlicingIterator<String> it = new SlicingIterator<String>(iter, -1, stop, -1);
-    for (int i = 0; i < stop; ++i) {
+    int i;
+    for (i = 0; i < stop; ++i) {
       assertTrue(it.hasNext());
       assertEquals(data[i], it.next());
     }
+    assertEquals(stop, i);
   }
 
   @Test
   public void testSlicingIterator_step() {
     int step = 5;
     SlicingIterator<String> it = new SlicingIterator<String>(iter, -1, -1, step);
-    for (int i = 0; i < data.length; i += step) {
+    int i;
+    for (i = 0; i < data.length; i += step) {
       assertTrue(it.hasNext());
       assertEquals(data[i], it.next());
     }
+    assertTrue(i >= data.length);
   }
 
   @Test
@@ -62,9 +68,11 @@ public class SlicingIteratorTest {
     int start = 1, stop = 5, step = 2;
     SlicingIterator<String> it = new SlicingIterator<String>(iter, start, stop,
         step);
-    for (int i = start; i < stop; i += step) {
+    int i;
+    for (i = start; i < stop; i += step) {
       assertTrue(it.hasNext());
       assertEquals(data[i], it.next());
     }
+    assertEquals(stop, i);
   }
 }

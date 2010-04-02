@@ -135,6 +135,23 @@ public class ItertoolsTest {
   }
 
   @Test
+  public void testSlice() {
+    int next = 0, start = 0, stop = 100, step = 2;
+    for (Integer i : slice(count(), start, stop, step)) {
+      assertTrue(i >= start);
+      assertTrue(i <= stop);
+      assertTrue(i % step == 0);
+      assertEquals(next, i.intValue());
+      next += step;
+    }
+    if (stop % step == 0) {
+      assertEquals(stop, next);
+    } else {
+      assertTrue(next >= stop);
+    }
+  }
+
+  @Test
   public void testZipCollectionOfIteratorOfE() {
     int group = 0;
     for (List<String> g : zip(iters)) {

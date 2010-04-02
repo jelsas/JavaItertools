@@ -81,7 +81,7 @@ public class SlicingIterator<E> implements Iterator<E> {
       tmp = it.next();
     }
 
-    if (it.currentCount() > sliceStop) {
+    if (it.currentCount() >= sliceStop) {
       tmp = null;
     }
 

@@ -1,5 +1,7 @@
 package itertools;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -14,6 +16,14 @@ import java.util.Iterator;
  */
 public class IterableIterator<T> implements Iterable<T>, Iterator<T> {
   Iterator<T> it;
+
+  public IterableIterator(T[] a) {
+    it = Arrays.asList(a).iterator();
+  }
+
+  public IterableIterator(Collection<T> c) {
+    it = c.iterator();
+  }
 
   public IterableIterator(Iterable<T> it) {
     this.it = it.iterator();
