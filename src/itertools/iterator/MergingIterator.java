@@ -17,7 +17,7 @@ import java.util.PriorityQueue;
 public class MergingIterator<E> implements Iterator<E> {
   private PriorityQueue<QueueElement<E>> q;
 
-  public MergingIterator(Collection<Iterator<E>> iterators,
+  public MergingIterator(Collection<? extends Iterator<E>> iterators,
       Comparator<? super E> comparator) {
     q = new PriorityQueue<QueueElement<E>>(iterators.size());
     for (Iterator<E> i : iterators) {
@@ -41,6 +41,13 @@ public class MergingIterator<E> implements Iterator<E> {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * Private utility class to provide custom comparator to the PriorityQueue.
+   * 
+   * @author jelsas
+   * 
+   * @param <F>
+   */
   private class QueueElement<F> implements Comparable<QueueElement<F>> {
     PeekableIterator<F> it;
     Comparator<? super F> comp;
