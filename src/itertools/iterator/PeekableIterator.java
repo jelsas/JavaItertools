@@ -44,6 +44,11 @@ public class PeekableIterator<E> implements Iterator<E> {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * Returns the next element without advancing the iterator.
+   * 
+   * @return The next element.
+   */
   public E peek() {
     if (hasNext()) return next;
 

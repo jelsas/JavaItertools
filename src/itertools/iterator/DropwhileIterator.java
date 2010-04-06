@@ -1,7 +1,6 @@
 package itertools.iterator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Drops elements while the implemented condition(E) method returns true.
