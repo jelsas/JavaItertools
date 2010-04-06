@@ -5,6 +5,7 @@ import itertools.functions.Mapper;
 import itertools.iterator.ChainedIterator;
 import itertools.iterator.CountingIterator;
 import itertools.iterator.CyclingIterator;
+import itertools.iterator.FileLineIterator;
 import itertools.iterator.GroupingIterator;
 import itertools.iterator.MappingIterator;
 import itertools.iterator.MergingIterator;
@@ -12,7 +13,7 @@ import itertools.iterator.RepeatingIterator;
 import itertools.iterator.SlicingIterator;
 import itertools.iterator.ZippingIterator;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -49,6 +50,18 @@ public class Itertools {
    */
   public static <E> IterableIterator<E> chain(Iterator<E>... iterators) {
     return chain(Arrays.asList(iterators));
+  }
+
+  /**
+   * See {@link #chain(Collection)}.
+   * 
+   * @param <E>
+   * @param iterators
+   * @return
+   */
+  public static <E> IterableIterator<E> chain(
+      Iterator<? extends Iterator<E>> iterators) {
+    return new IterableIterator<E>(new ChainedIterator<E>(iterators));
   }
 
   /**
@@ -154,6 +167,20 @@ public class Itertools {
   }
 
   /**
+   * See {@link #map(Iterator, Mapper)}.
+   * 
+   * @param <I>
+   * @param <O>
+   * @param collection
+   * @param mapper
+   * @return
+   */
+  public static <I, O> IterableIterator<O> map(Collection<I> collection,
+      final Mapper<I, O> mapper) {
+    return map(collection.iterator(), mapper);
+  }
+
+  /**
    * Creates an Iterable over the input, applying the {@link Mapper.map(Object)}
    * function to each element. See {@link MappingIterator}.
    * 
@@ -186,14 +213,13 @@ public class Itertools {
    * @param <E>
    * @param iterators
    *          The underlying iterators.
-   * @param comparator
+   * @param comp
    *          The comparator.
    * @return An merged iterable.
    */
   public static <E> IterableIterator<E> merge(
-      Collection<Iterator<E>> iterators, Comparator<E> comparator) {
-    return new IterableIterator<E>(
-        new MergingIterator<E>(iterators, comparator));
+      Collection<? extends Iterator<E>> iterators, Comparator<E> comp) {
+    return new IterableIterator<E>(new MergingIterator<E>(iterators, comp));
   }
 
   /**
@@ -208,7 +234,7 @@ public class Itertools {
    * @return A merged iterable.
    */
   public static <E extends Comparable<E>> IterableIterator<E> merge(
-      Collection<Iterator<E>> iterators) {
+      Collection<? extends Iterator<E>> iterators) {
     Comparator<E> comp = new Comparator<E>() {
       public int compare(E o1, E o2) {
         return o1.compareTo(o2);
@@ -228,6 +254,37 @@ public class Itertools {
   public static <E extends Comparable<E>> IterableIterator<E> merge(
       Iterator<E>... iterators) {
     return merge(Arrays.asList(iterators));
+  }
+
+  /**
+   * Opens the specified file for reading. See {@link FileLineIterator}.
+   * 
+   * @param filename
+   *          The file to open.
+   * @return
+   * @throws IOException
+   *           If an error occurred opening the file.
+   */
+  public static IterableIterator<String> open(String filename)
+      throws IOException {
+    return new IterableIterator<String>(new FileLineIterator(filename));
+  }
+
+  /**
+   * Opens the specified file for reading. See {@link FileLineIterator}.
+   * 
+   * @param filename
+   *          The file to open.
+   * @param bufferSize
+   *          Buffer size for underlying file reader.
+   * @return
+   * @throws IOException
+   *           If an error occurred opening the file.
+   */
+  public static IterableIterator<String> open(String filename, int bufferSize)
+      throws IOException {
+    return new IterableIterator<String>(new FileLineIterator(filename,
+        bufferSize));
   }
 
   /**
