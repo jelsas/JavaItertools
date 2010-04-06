@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
-import itertools.IBuilder;
 import itertools.Itertools;
 
 import org.junit.Test;
