@@ -1,5 +1,6 @@
 package itertools;
 
+import itertools.functions.Condition;
 import itertools.functions.Grouper;
 import itertools.functions.Mapper;
 
@@ -36,6 +37,17 @@ public class IBuilder<T> implements Iterable<T> {
    */
   public IBuilder<T> cycle() {
     it = Itertools.cycle(it);
+    return this;
+  }
+
+  /**
+   * See {@link Itertools.dropwhile}
+   * 
+   * @param condition
+   * @return
+   */
+  public IBuilder<T> dropwhile(final Condition<T> condition) {
+    it = Itertools.dropwhile(it, condition);
     return this;
   }
 
@@ -88,4 +100,16 @@ public class IBuilder<T> implements Iterable<T> {
     it = Itertools.slice(it, start, stop, by);
     return this;
   }
+
+  /**
+   * See {@link Itertools.takewhile}
+   * 
+   * @param condition
+   * @return
+   */
+  public IBuilder<T> takewhile(final Condition<T> condition) {
+    it = Itertools.takewhile(it, condition);
+    return this;
+  }
+
 }

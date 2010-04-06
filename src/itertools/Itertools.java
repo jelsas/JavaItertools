@@ -1,16 +1,19 @@
 package itertools;
 
+import itertools.functions.Condition;
 import itertools.functions.Grouper;
 import itertools.functions.Mapper;
 import itertools.iterator.ChainedIterator;
 import itertools.iterator.CountingIterator;
 import itertools.iterator.CyclingIterator;
+import itertools.iterator.DropwhileIterator;
 import itertools.iterator.FileLineIterator;
 import itertools.iterator.GroupingIterator;
 import itertools.iterator.MappingIterator;
 import itertools.iterator.MergingIterator;
 import itertools.iterator.RepeatingIterator;
 import itertools.iterator.SlicingIterator;
+import itertools.iterator.TakewhileIterator;
 import itertools.iterator.ZippingIterator;
 
 import java.io.IOException;
@@ -94,6 +97,24 @@ public class Itertools {
    */
   public static <E> IterableIterator<E> cycle(Iterator<E> iterator) {
     return new IterableIterator<E>(new CyclingIterator<E>(iterator));
+  }
+
+  /**
+   * See {@link DropwhileIterator}.
+   * 
+   * @param <E>
+   * @param iterator
+   * @param condition
+   * @return
+   */
+  public static <E> IterableIterator<E> dropwhile(Iterator<E> iterator,
+      final Condition<E> condition) {
+    return new IterableIterator<E>(new DropwhileIterator<E>(iterator) {
+      @Override
+      public boolean condition(E item) {
+        return condition.condition(item);
+      }
+    });
   }
 
   /**
@@ -319,6 +340,24 @@ public class Itertools {
   public static <E> IterableIterator<E> slice(Iterator<E> it, int start,
       int stop, int by) {
     return new IterableIterator<E>(new SlicingIterator<E>(it, start, stop, by));
+  }
+
+  /**
+   * See {@link TakewhileIterator}.
+   * 
+   * @param <E>
+   * @param iterator
+   * @param condition
+   * @return
+   */
+  public static <E> IterableIterator<E> takewhile(Iterator<E> iterator,
+      final Condition<E> condition) {
+    return new IterableIterator<E>(new TakewhileIterator<E>(iterator) {
+      @Override
+      public boolean condition(E item) {
+        return condition.condition(item);
+      }
+    });
   }
 
   /**
