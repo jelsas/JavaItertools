@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * An iterator that groups items based on the gruop(E, E) function. Like unix's
+ * An iterator that groups items based on the group(E, E) function. Like unix's
  * 'uniq' or python's itertools.groupby
  * 
  * @author jelsas
