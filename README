@@ -1,0 +1,4 @@
+JavaItertools is a loose port of Python’s itertools library to Java. This
+library is intended to have the similar modularity, and low memory requirements.
+
+See the wiki for the latest information: http://wiki.github.com/jelsas/JavaItertools/
