@@ -17,6 +17,10 @@ public class FileLineIterator extends IteratorWrapper<String> {
     in = new BufferedReader(new FileReader(filename));
   }
 
+  public FileLineIterator(String filename, int bufferSize) throws IOException {
+    in = new BufferedReader(new FileReader(filename), bufferSize);
+  }
+
   /**
    * Returns the next line of the file or null if there are no more lines, or if
    * an error occurred reading the file. The file is close & cleaned up if an
@@ -24,8 +28,7 @@ public class FileLineIterator extends IteratorWrapper<String> {
    */
   @Override
   public String getNext() {
-    if (in == null)
-      return null;
+    if (in == null) return null;
     String next;
     try {
       next = in.readLine();
