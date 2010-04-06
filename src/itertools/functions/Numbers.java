@@ -24,11 +24,11 @@ package itertools.functions;
 public class Numbers {
   /** Converts any numeric type to an Integer */
   public static final Mapper<? extends Number, Integer> INT = new _int();
-  /** Converts any numeric type to an Long */
+  /** Converts any numeric type to a Long */
   public static final Mapper<? extends Number, Long> LONG = new _long();
-  /** Converts any numeric type to an Float */
+  /** Converts any numeric type to a Float */
   public static final Mapper<? extends Number, Float> FLOAT = new _float();
-  /** Converts any numeric type to an Double */
+  /** Converts any numeric type to a Double */
   public static final Mapper<? extends Number, Double> DOUBLE = new _double();
 
   private static class _int implements Mapper<Number, Integer> {
