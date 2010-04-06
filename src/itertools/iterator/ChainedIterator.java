@@ -16,11 +16,17 @@ public class ChainedIterator<E> implements Iterator<E> {
   private LinkedList<Iterator<E>> iterator_chain = new LinkedList<Iterator<E>>();
   private E next;
 
-  public ChainedIterator(Collection<Iterator<E>> iterators) {
-    for (Iterator<E> i : iterators) {
+  public ChainedIterator(Iterator<? extends Iterator<E>> iterators) {
+    while (iterators.hasNext()) {
+      Iterator<E> i = iterators.next();
+      if (i == null) continue;
       iterator_chain.add(i);
     }
     advanceIterator();
+  }
+
+  public ChainedIterator(Collection<? extends Iterator<E>> iterators) {
+    this(iterators.iterator());
   }
 
   public boolean hasNext() {
@@ -28,16 +34,12 @@ public class ChainedIterator<E> implements Iterator<E> {
   }
 
   public E next() {
-    if (next == null) {
-      throw new NoSuchElementException();
-    }
+    if (next == null) { throw new NoSuchElementException(); }
     return advanceIterator();
   }
 
   public void remove() {
-    if (iterator_chain.isEmpty()) {
-      throw new IllegalStateException();
-    }
+    if (iterator_chain.isEmpty()) { throw new IllegalStateException(); }
     iterator_chain.getFirst().remove();
   }
 
