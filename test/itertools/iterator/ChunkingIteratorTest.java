@@ -54,7 +54,12 @@ public class ChunkingIteratorTest {
         int next = chunk.next().intValue();
         assertEquals(++lastValue, next);
       }
-      assertTrue(thisChunkSize <= chunkSize);
+
+      if (chunks.hasNext()) {
+        assertEquals(chunkSize, thisChunkSize);
+      } else {
+        assertTrue(thisChunkSize <= chunkSize);
+      }
     }
 
     assertEquals(lastValue, 99);
