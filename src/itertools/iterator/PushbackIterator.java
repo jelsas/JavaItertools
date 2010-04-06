@@ -4,6 +4,12 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ * An iterator that allows pushing elements back into the iteration.
+ * @author jelsas
+ *
+ * @param <E>
+ */
 public class PushbackIterator<E> implements Iterator<E> {
   private Deque<E> q = new LinkedList<E>();
   private Iterator<E> it;
@@ -28,6 +34,10 @@ public class PushbackIterator<E> implements Iterator<E> {
     }
   }
 
+  /**
+   * Add this element back to the iterator.
+   * @param e
+   */
   public void pushBack(E e) {
     q.push(e);
   }

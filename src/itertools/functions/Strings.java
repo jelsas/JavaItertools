@@ -10,13 +10,21 @@ package itertools.functions;
  * 
  */
 public class Strings {
+  /** Calls String.trim(). */
   public static final Mapper<String, String> TRIM = new _trim();
+  /** Calls String.split("\\s+"). */
   public static final Mapper<String, String[]> SPLIT = new _split();
+  /** Calls String.toUpper(). */
   public static final Mapper<String, String> UPPER = new _upper();
+  /** Calls String.toLower(). */
   public static final Mapper<String, String> LOWER = new _lower();
+  /** Calls Integer.parseInt(String). */
   public static final Mapper<String, Integer> TO_INT = new _parseInt();
+  /** Calls Long.parseLong(String). */
   public static final Mapper<String, Long> TO_LONG = new _parseLong();
+  /** Calls Float.parseFloat(String). */
   public static final Mapper<String, Float> TO_FLOAT = new _parseFloat();
+  /** Calls Double.parseDouble(). */
   public static final Mapper<String, Double> TO_DOUBLE = new _parseDouble();
 
   private static class _trim implements Mapper<String, String> {

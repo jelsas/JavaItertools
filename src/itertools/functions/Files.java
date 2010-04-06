@@ -5,7 +5,16 @@ import java.io.IOException;
 import itertools.IterableIterator;
 import itertools.iterator.FileLineIterator;
 
+/**
+ * A few static utility {@link Mapper} objects for operating on files.
+ * 
+ * @author jelsas
+ * 
+ */
 public class Files {
+  /**
+   * Opens a filename String as a file.
+   */
   public static final BranchingMapper<String, IterableIterator<String>, String> OPEN = new _openFiles();
 
   private static class _openFiles implements
