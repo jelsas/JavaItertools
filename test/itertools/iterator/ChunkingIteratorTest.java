@@ -53,9 +53,7 @@ public class ChunkingIteratorTest {
         ++thisChunkSize;
         int next = chunk.next().intValue();
         assertEquals(++lastValue, next);
-        System.out.print(lastValue + "=" + next + " ");
       }
-      System.out.println();
       assertTrue(thisChunkSize <= chunkSize);
     }
 
