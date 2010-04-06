@@ -27,7 +27,7 @@ import java.util.LinkedList;
  */
 public class PushbackIterator<E> implements Iterator<E> {
   private Deque<E> q = new LinkedList<E>();
-  private Iterator<E> it;
+  Iterator<E> it;
 
   public PushbackIterator(Iterator<E> it) {
     this.it = it;

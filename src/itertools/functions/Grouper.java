@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.functions;
 
 /**
@@ -24,8 +24,7 @@ package itertools.functions;
  */
 public interface Grouper<E> {
   /**
-   * The function to define the groups. Note: this function must return true if
-   * passed the same object as both arguments.
+   * The function to define the groups.
    * 
    * @param e1
    *          The first item to compare.

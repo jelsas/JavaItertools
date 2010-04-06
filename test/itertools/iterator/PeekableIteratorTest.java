@@ -12,42 +12,34 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+*/
 package itertools.iterator;
+
+import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
-/**
- * Iterator that keeps a count of the number of times next() has been called
- * (starting at zero). {@link #currentCount()} retrieves this count.
- * 
- * @author jelsas
- * 
- * @param <E>
- */
-public class EnumeratingIterator<E> implements Iterator<E> {
-  Iterator<E> it;
-  private int count = -1;
+import itertools.Itertools;
 
-  public EnumeratingIterator(Iterator<E> it) {
-    this.it = it;
-  }
+import org.junit.Test;
 
-  public boolean hasNext() {
-    return it.hasNext();
-  }
+public class PeekableIteratorTest {
 
-  public E next() {
-    ++count;
-    return it.next();
-  }
+  @Test
+  public void testPeekableIterator() {
+    Iterator<Integer> it = Itertools.count();
+    it = Itertools.slice(it, 0, 100, 1).iterator();
+    PeekableIterator<Integer> pit = new PeekableIterator<Integer>(it);
 
-  public void remove() {
-    it.remove();
-  }
+    int i;
+    for (i = 0; i < 100; ++i) {
+      assertTrue(pit.hasNext());
+      assertEquals(i, pit.peek().intValue());
+      assertEquals(i, pit.next().intValue());
+      if (i < 100 - 1) assertEquals(i + 1, pit.peek().intValue());
+    }
 
-  public int currentCount() {
-    return count;
+    assertFalse(pit.hasNext());
   }
 
 }

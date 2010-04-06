@@ -12,42 +12,37 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
  */
 package itertools.iterator;
 
 import java.util.Iterator;
 
 /**
- * Iterator that keeps a count of the number of times next() has been called
- * (starting at zero). {@link #currentCount()} retrieves this count.
+ * An iterator that chunks elements into chunkSize iterators.
  * 
  * @author jelsas
  * 
- * @param <E>
  */
-public class EnumeratingIterator<E> implements Iterator<E> {
-  Iterator<E> it;
-  private int count = -1;
+public class ChunkingIterator<E> extends LazyGroupingIterator<E> {
+  EnumeratingIterator<E> it;
+  private int chunkSize;
 
-  public EnumeratingIterator(Iterator<E> it) {
-    this.it = it;
+  /**
+   * @param it
+   *          The underlying iterator
+   * @param chunkSize
+   *          The maximum number of items in the chunk
+   */
+  public ChunkingIterator(Iterator<E> it, int chunkSize) {
+    super(new EnumeratingIterator<E>(it));
+    this.it = (EnumeratingIterator<E>) super.it.it;
+    this.chunkSize = chunkSize;
   }
 
-  public boolean hasNext() {
-    return it.hasNext();
-  }
-
-  public E next() {
-    ++count;
-    return it.next();
-  }
-
-  public void remove() {
-    it.remove();
-  }
-
-  public int currentCount() {
-    return count;
+  @Override
+  public boolean group(E e1, E e2) {
+    return (it.currentCount() % chunkSize != 0);
   }
 
 }
