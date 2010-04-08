@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.functions;
 
 /**
@@ -29,6 +29,8 @@ public class Strings {
   public static final Mapper<String, String> TRIM = new _trim();
   /** Calls String.split("\\s+"). */
   public static final Mapper<String, String[]> SPLIT = new _split();
+  /** Joins a string with spaces. */
+  public static final Mapper<String[], String> JOIN = new _join();
   /** Calls String.toUpper(). */
   public static final Mapper<String, String> UPPER = new _upper();
   /** Calls String.toLower(). */
@@ -53,6 +55,22 @@ public class Strings {
     public String[] map(String input) {
       if (input == null) return null;
       return input.split("\\s+");
+    }
+  }
+
+  private static class _join implements Mapper<String[], String> {
+    StringBuilder sb = new StringBuilder();
+
+    public String map(String[] input) {
+      if (input == null) return null;
+      if (input.length == 0) return "";
+      sb.setLength(0);
+      sb.append(input[0]);
+      for (int i = 1; i < input.length; ++i) {
+        sb.append(" ");
+        sb.append(input[i]);
+      }
+      return sb.toString();
     }
   }
 
