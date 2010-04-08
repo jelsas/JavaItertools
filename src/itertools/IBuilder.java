@@ -85,10 +85,8 @@ public class IBuilder<T> implements Iterable<T> {
    * @param grouper
    * @return
    */
-  public IBuilder<Iterator<T>> groupby(Grouper<T> grouper) {
-    IBuilder<Iterator<T>> i = new IBuilder<Iterator<T>>(Itertools.groupby(it,
-        grouper).it);
-    return i;
+  public IBuilder<Iterator<T>> groupby(final Grouper<T> grouper) {
+    return Itertools.groupby(it, grouper);
   }
 
   /**
@@ -98,10 +96,8 @@ public class IBuilder<T> implements Iterable<T> {
    * @param maxSize
    * @return
    */
-  public IBuilder<Iterator<T>> groupby(Grouper<T> grouper, int maxSize) {
-    IBuilder<Iterator<T>> i = new IBuilder<Iterator<T>>(Itertools.groupby(it,
-        grouper, maxSize).it);
-    return i;
+  public IBuilder<Iterator<T>> groupby(final Grouper<T> grouper, int maxSize) {
+    return Itertools.groupby(it, grouper, maxSize);
   }
 
   /**
@@ -111,9 +107,8 @@ public class IBuilder<T> implements Iterable<T> {
    * @param mapper
    * @return
    */
-  public <O> IBuilder<O> map(Mapper<T, O> mapper) {
-    IBuilder<O> i = new IBuilder<O>(Itertools.map(it, mapper).it);
-    return i;
+  public <O> IBuilder<O> map(final Mapper<T, O> mapper) {
+    return Itertools.map(it, mapper);
   }
 
   /**
