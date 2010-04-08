@@ -51,83 +51,56 @@ public class IBuilder<T> implements Iterable<T> {
   }
 
   /**
-   * See {@link Itertools.cycle}.
-   * 
-   * @return
+   * See {@link Itertools#cycle(Iterable)}.
    */
   public IBuilder<T> cycle() {
     return Itertools.cycle(it);
   }
 
   /**
-   * See {@link Itertools.dropwhile}
-   * 
-   * @param condition
-   * @return
+   * See {@link Itertools#dropwhile(Iterable, Condition)}
    */
   public IBuilder<T> dropwhile(final Condition<T> condition) {
     return Itertools.dropwhile(it, condition);
   }
 
   /**
-   * See {@link Itertools.filter}
-   * 
-   * @param keep
-   * @return
+   * See {@link Itertools#filter(Iterable, Condition)}
    */
   public IBuilder<T> filter(final Condition<? super T> keep) {
     return Itertools.filter(it, keep);
   }
 
   /**
-   * See {@link Itertools.groupby}.
-   * 
-   * @param grouper
-   * @return
+   * See {@link Itertools#groupby(Iterable, Grouper)}.
    */
   public IBuilder<Iterator<T>> groupby(final Grouper<T> grouper) {
     return Itertools.groupby(it, grouper);
   }
 
   /**
-   * See {@link Itertools.groupby}.
-   * 
-   * @param grouper
-   * @param maxSize
-   * @return
+   * See {@link Itertools#groupby(Iterable, Grouper, int)}.
    */
   public IBuilder<Iterator<T>> groupby(final Grouper<T> grouper, int maxSize) {
     return Itertools.groupby(it, grouper, maxSize);
   }
 
   /**
-   * See {@link Itertools.map}.
-   * 
-   * @param <O>
-   * @param mapper
-   * @return
+   * See {@link Itertools#map(Iterable, Mapper)}.
    */
   public <O> IBuilder<O> map(final Mapper<T, O> mapper) {
     return Itertools.map(it, mapper);
   }
 
   /**
-   * See {@link Itertools.slice}.
-   * 
-   * @param start
-   * @param stop
-   * @param by
-   * @return
+   * See {@link Itertools#slice(Iterable, int, int, int)}.
    */
   public IBuilder<T> slice(int start, int stop, int by) {
     return Itertools.slice(it, start, stop, by);
   }
 
   /**
-   * See {@link Itertools.takewhile}
-   * 
-   * @param condition
-   * @return
+   * See {@link Itertools#takewhile(Iterator, Condition)}
    */
   public IBuilder<T> takewhile(final Condition<T> condition) {
     return Itertools.takewhile(it, condition);

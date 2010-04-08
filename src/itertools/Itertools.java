@@ -22,7 +22,6 @@ import itertools.iterator.*;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -43,29 +42,21 @@ public class Itertools {
    * 
    * @param <E>
    * @param iterators
-   * @return
+   * @return An iterable.
    */
   public static <E> IBuilder<E> chain(Iterable<? extends Iterable<E>> iterators) {
     return chain(iterators.iterator());
   }
 
   /**
-   * See {@link #chain(Collection)}.
-   * 
-   * @param <E>
-   * @param iterators
-   * @return
+   * See {@link #chain(Iterable)}.
    */
   public static <E> IBuilder<E> chain(Iterable<E>... iterators) {
     return chain(Arrays.asList(iterators));
   }
 
   /**
-   * See {@link #chain(Collection)}.
-   * 
-   * @param <E>
-   * @param iterators
-   * @return
+   * See {@link #chain(Iterable)}.
    */
   public static <E> IBuilder<E> chain(Iterator<? extends Iterable<E>> iterators) {
     return new IBuilder<E>(new ChainedIterator<E>(iterators));
@@ -76,7 +67,7 @@ public class Itertools {
    * 
    * @param start
    *          Starting number.
-   * @return
+   * @return An iterable.
    */
   public static IBuilder<Integer> count(int start) {
     return new IBuilder<Integer>(new CountingIterator(start));
@@ -85,7 +76,7 @@ public class Itertools {
   /**
    * Creates an Iterable that counts forever. See {@link CountingIterator}.
    * 
-   * @return
+   * @return An iterable.
    */
   public static IBuilder<Integer> count() {
     return new IBuilder<Integer>(new CountingIterator());
@@ -97,7 +88,7 @@ public class Itertools {
    * 
    * @param <E>
    * @param iterator
-   * @return
+   * @return An iterable.
    */
   public static <E> IBuilder<E> cycle(Iterable<E> iterator) {
     return cycle(iterator.iterator());
@@ -109,7 +100,7 @@ public class Itertools {
    * 
    * @param <E>
    * @param iterator
-   * @return
+   * @return An iterable.
    */
   public static <E> IBuilder<E> cycle(Iterator<E> iterator) {
     return new IBuilder<E>(new CyclingIterator<E>(iterator));
@@ -117,11 +108,6 @@ public class Itertools {
 
   /**
    * See {@link DropwhileIterator}.
-   * 
-   * @param <E>
-   * @param iterator
-   * @param condition
-   * @return
    */
   public static <E> IBuilder<E> dropwhile(Iterable<E> iterator,
       final Condition<E> condition) {
@@ -130,11 +116,6 @@ public class Itertools {
 
   /**
    * See {@link DropwhileIterator}.
-   * 
-   * @param <E>
-   * @param iterator
-   * @param condition
-   * @return
    */
   public static <E> IBuilder<E> dropwhile(Iterator<E> iterator,
       final Condition<E> condition) {
@@ -147,13 +128,7 @@ public class Itertools {
   }
 
   /**
-   * See {@link FilteringIterator}.
-   * 
-   * @param <E>
-   * @param iterator
-   * @param condition
-   *          Condition object that returns true to keep objects.
-   * @return
+   * See {@link #filter(Iterator, Condition)}.
    */
   public static <E> IBuilder<E> filter(Iterable<E> iterator,
       final Condition<? super E> keep) {
@@ -161,13 +136,13 @@ public class Itertools {
   }
 
   /**
-   * See {@link FilteringIterator}.
+   * Filters the provided iterator with the condition, keeping elements where
+   * keep.condition(element) evaluates to true.
    * 
    * @param <E>
    * @param iterator
-   * @param condition
-   *          Condition object that returns true to keep objects.
-   * @return
+   * @param keep The filtering condition
+   * @return An iterator with some elements filtered.
    */
   public static <E> IBuilder<E> filter(Iterator<E> iterator,
       final Condition<? super E> keep) {
@@ -181,7 +156,7 @@ public class Itertools {
 
   /**
    * Creates an Iterable over sequential groups of elements in the provided
-   * iterator. The {@link Grouper.group(Object, Object)} function defines
+   * iterator. The {@link Grouper#group(Object, Object)} function defines
    * whether adjascent elements in the iterator belong in the same group.
    * Similar to unix's <tt>uniq</tt> command. See {@link GroupingIterator}.
    * 
@@ -190,7 +165,7 @@ public class Itertools {
    *          The underlying iterator.
    * @param grouper
    *          The grouping function.
-   * @return An iterator over groups.
+   * @return An iterable over groups.
    */
   public static <E> IBuilder<Iterator<E>> groupby(Iterable<E> iterator,
       final Grouper<E> grouper) {
@@ -199,7 +174,7 @@ public class Itertools {
 
   /**
    * Creates an Iterable over sequential groups of elements in the provided
-   * iterator. The {@link Grouper.group(Object, Object)} function defines
+   * iterator. The {@link Grouper#group(Object, Object)} function defines
    * whether adjascent elements in the iterator belong in the same group.
    * Similar to unix's <tt>uniq</tt> command. See {@link GroupingIterator}.
    * 
@@ -208,7 +183,7 @@ public class Itertools {
    *          The underlying iterator.
    * @param grouper
    *          The grouping function.
-   * @return An iterator over groups.
+   * @return An iterable over groups.
    */
   public static <E> IBuilder<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper) {
@@ -227,7 +202,7 @@ public class Itertools {
    * @param iterator
    * @param grouper
    * @param maxGroupSize
-   * @return
+   * @return An iterable over groups.
    */
   public static <E> IBuilder<Iterator<E>> groupby(Iterable<E> iterator,
       final Grouper<E> grouper, int maxGroupSize) {
@@ -237,7 +212,7 @@ public class Itertools {
   /**
    * Creates an Iterable over sequential groups of elements in the provided
    * iterator, limiting the maximum group size to <tt>maxGroupSize</tt>. The
-   * {@link Grouper.group(Object, Object)} function defines whether adjascent
+   * {@link Grouper#group(Object, Object)} function defines whether adjascent
    * elements in the iterator belong in the same group. Similar to unix's
    * <tt>uniq</tt> command. See {@link GroupingIterator}.<br/>
    * Note: limiting the maximum group size can be useful to limit memory
@@ -251,7 +226,7 @@ public class Itertools {
    * @param maxGroupSize
    *          The maximum size of a group. If a group exceeds this size, it will
    *          be split into more than one group.
-   * @return
+   * @return An iterable over groups.
    */
   public static <E> IBuilder<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper, int maxGroupSize) {
@@ -266,12 +241,6 @@ public class Itertools {
 
   /**
    * See {@link #map(Iterator, Mapper)}.
-   * 
-   * @param <I>
-   * @param <O>
-   * @param collection
-   * @param mapper
-   * @return
    */
   public static <I, O> IBuilder<O> map(Iterable<I> collection,
       final Mapper<I, O> mapper) {
@@ -279,7 +248,7 @@ public class Itertools {
   }
 
   /**
-   * Creates an Iterable over the input, applying the {@link Mapper.map(Object)}
+   * Creates an Iterable over the input, applying the {@link Mapper#map(Object)}
    * function to each element. See {@link MappingIterator}.
    * 
    * @param <I>
@@ -304,13 +273,6 @@ public class Itertools {
 
   /**
    * See {@link #merge(Iterator, Comparator)}.
-   * 
-   * @param <E>
-   * @param iterators
-   *          The underlying iterators.
-   * @param comp
-   *          The comparator.
-   * @return An merged iterable.
    */
   public static <E> IBuilder<E> merge(
       Iterable<? extends Iterable<E>> iterators, Comparator<E> comp) {
@@ -359,11 +321,6 @@ public class Itertools {
 
   /**
    * See {@link #merge(Iterator, Comparator)}.
-   * 
-   * @param <E>
-   * @param iterators
-   *          The underlying iterators.
-   * @return A merged iterable.
    */
   public static <E extends Comparable<? super E>> IBuilder<E> merge(
       Iterable<? extends Iterable<E>> iterators) {
@@ -378,10 +335,6 @@ public class Itertools {
 
   /**
    * See {@link #merge(Iterator)}
-   * 
-   * @param <E>
-   * @param iterators
-   * @return
    */
   public static <E extends Comparable<E>> IBuilder<E> merge(
       Iterable<E>... iterators) {
@@ -393,7 +346,7 @@ public class Itertools {
    * 
    * @param filename
    *          The file to open.
-   * @return
+   * @return An iterable over lines in the file.
    * @throws IOException
    *           If an error occurred opening the file.
    */
@@ -407,8 +360,8 @@ public class Itertools {
    * @param filename
    *          The file to open.
    * @param bufferSize
-   *          Buffer size for underlying file reader.
-   * @return
+   *          Buffer size of underlying file buffer.
+   * @return An iterable over lines in the file.
    * @throws IOException
    *           If an error occurred opening the file.
    */
@@ -425,7 +378,7 @@ public class Itertools {
    *          The item type.
    * @param item
    *          The item.
-   * @return
+   * @return An iterable that always reutrns the same item.
    */
   public static <E> IBuilder<E> repeat(E item) {
     return new IBuilder<E>(new RepeatingIterator<E>(item));
@@ -452,7 +405,7 @@ public class Itertools {
    *          The stop position. &lt;0 iterates to the end of the <tt>it</it>.
    * @param by
    *          The step size. &lt;0 equivalent to a step size of 1.
-   * @return
+   * @return An iterable.
    */
   public static <E> IBuilder<E> slice(Iterator<E> it, int start, int stop,
       int by) {
@@ -461,11 +414,6 @@ public class Itertools {
 
   /**
    * See {@link TakewhileIterator}.
-   * 
-   * @param <E>
-   * @param iterator
-   * @param condition
-   * @return
    */
   public static <E> IBuilder<E> takewhile(Iterator<E> iterator,
       final Condition<E> condition) {
@@ -479,10 +427,6 @@ public class Itertools {
 
   /**
    * See {@link #zip(Iterator)}.
-   * 
-   * @param <E>
-   * @param iterators
-   * @return
    */
   public static <E> IBuilder<List<E>> zip(
       Iterable<? extends Iterable<E>> iterators) {
@@ -497,7 +441,7 @@ public class Itertools {
    * 
    * @param <E>
    * @param iterators
-   * @return
+   * @return An iterable over a list of items in each input iterator.
    */
   public static <E> IBuilder<List<E>> zip(
       Iterator<? extends Iterable<E>> iterators) {
@@ -505,11 +449,7 @@ public class Itertools {
   }
 
   /**
-   * See {@link #zip(Collection)}.
-   * 
-   * @param <E>
-   * @param iterators
-   * @return
+   * See {@link #zip(Iterator)}.
    */
   public static <E> IBuilder<List<E>> zip(Iterable<E>... iterators) {
     return zip(Arrays.asList(iterators));
