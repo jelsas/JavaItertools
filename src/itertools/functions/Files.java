@@ -16,7 +16,6 @@
 package itertools.functions;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import itertools.IBuilder;
 import itertools.iterator.FileLineIterator;
