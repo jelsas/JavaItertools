@@ -28,8 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A collection of static methods to aid creation of specialized iterators. Most
- * of these correspond to functions defined in Python's itertools library.
+ * A collection of static methods to aid creation of specialized iterators. All
+ * of these decorator methods take an Iterator or Iterable and return an
+ * (Iterable) IBuilder object.
  * 
  * @author jelsas
  * 
@@ -45,7 +46,7 @@ public class Itertools {
    * @return
    */
   public static <E> IBuilder<E> chain(Iterable<? extends Iterable<E>> iterators) {
-    return new IBuilder<E>(new ChainedIterator<E>(iterators.iterator()));
+    return chain(iterators.iterator());
   }
 
   /**
@@ -99,7 +100,7 @@ public class Itertools {
    * @return
    */
   public static <E> IBuilder<E> cycle(Iterable<E> iterator) {
-    return new IBuilder<E>(new CyclingIterator<E>(iterator.iterator()));
+    return cycle(iterator.iterator());
   }
 
   /**
@@ -122,6 +123,19 @@ public class Itertools {
    * @param condition
    * @return
    */
+  public static <E> IBuilder<E> dropwhile(Iterable<E> iterator,
+      final Condition<E> condition) {
+    return dropwhile(iterator.iterator(), condition);
+  }
+
+  /**
+   * See {@link DropwhileIterator}.
+   * 
+   * @param <E>
+   * @param iterator
+   * @param condition
+   * @return
+   */
   public static <E> IBuilder<E> dropwhile(Iterator<E> iterator,
       final Condition<E> condition) {
     return new IBuilder<E>(new DropwhileIterator<E>(iterator) {
@@ -130,6 +144,20 @@ public class Itertools {
         return condition.condition(item);
       }
     });
+  }
+
+  /**
+   * See {@link FilteringIterator}.
+   * 
+   * @param <E>
+   * @param iterator
+   * @param condition
+   *          Condition object that returns true to keep objects.
+   * @return
+   */
+  public static <E> IBuilder<E> filter(Iterable<E> iterator,
+      final Condition<? super E> keep) {
+    return filter(iterator.iterator(), keep);
   }
 
   /**
@@ -193,6 +221,20 @@ public class Itertools {
   }
 
   /**
+   * See {@link #groupby(Iterator, Grouper, int)}.
+   * 
+   * @param <E>
+   * @param iterator
+   * @param grouper
+   * @param maxGroupSize
+   * @return
+   */
+  public static <E> IBuilder<Iterator<E>> groupby(Iterable<E> iterator,
+      final Grouper<E> grouper, int maxGroupSize) {
+    return groupby(iterator.iterator(), grouper, maxGroupSize);
+  }
+
+  /**
    * Creates an Iterable over sequential groups of elements in the provided
    * iterator, limiting the maximum group size to <tt>maxGroupSize</tt>. The
    * {@link Grouper.group(Object, Object)} function defines whether adjascent
@@ -220,28 +262,6 @@ public class Itertools {
         return grouper.group(e1, e2);
       }
     });
-  }
-
-  /**
-   * Terse utility method for creating an IBuilder over a collection.
-   * 
-   * @param <E>
-   * @param array
-   * @return
-   */
-  public static <E> IBuilder<E> i(Collection<E> c) {
-    return new IBuilder<E>(c);
-  }
-
-  /**
-   * Terse utility method for creating an IBuilder over an array.
-   * 
-   * @param <E>
-   * @param array
-   * @return
-   */
-  public static <E> IBuilder<E> i(E[] array) {
-    return new IBuilder<E>(array);
   }
 
   /**
@@ -283,10 +303,7 @@ public class Itertools {
   }
 
   /**
-   * Merges the provided iterators so that the resulting Iterable is in sorted
-   * order according to the comparator. It is assumed that the provided
-   * iterators are in sorted order. See {@link MergingIterator} and
-   * {@link #merge(Collection)} for merging by the natural ordering.
+   * See {@link #merge(Iterator, Comparator)}.
    * 
    * @param <E>
    * @param iterators
@@ -297,6 +314,24 @@ public class Itertools {
    */
   public static <E> IBuilder<E> merge(
       Iterable<? extends Iterable<E>> iterators, Comparator<E> comp) {
+    return merge(iterators.iterator(), comp);
+  }
+
+  /**
+   * Merges the provided iterators so that the resulting Iterable is in sorted
+   * order according to the comparator. It is assumed that the provided
+   * iterators are in sorted order. See {@link MergingIterator} and
+   * {@link #merge(Iterator)} for merging by the natural ordering.
+   * 
+   * @param <E>
+   * @param iterators
+   *          The underlying iterators.
+   * @param comp
+   *          The comparator.
+   * @return An merged iterable.
+   */
+  public static <E> IBuilder<E> merge(
+      Iterator<? extends Iterable<E>> iterators, Comparator<E> comp) {
     return new IBuilder<E>(new MergingIterator<E>(iterators, comp));
   }
 
@@ -304,14 +339,33 @@ public class Itertools {
    * Merges the provided iterators so that the resulting Iterable is in sorted
    * order according to the object's natrual order. It is assumed that the
    * provided iterators are in sorted order. See {@link MergingIterator} and
-   * {@link #merge(Collection, Comparator)}.
+   * {@link #merge(Iterator, Comparator)}.
    * 
    * @param <E>
    * @param iterators
    *          The underlying iterators.
    * @return A merged iterable.
    */
-  public static <E extends Comparable<E>> IBuilder<E> merge(
+  public static <E extends Comparable<? super E>> IBuilder<E> merge(
+      Iterator<? extends Iterable<E>> iterators) {
+    Comparator<E> comp = new Comparator<E>() {
+      public int compare(E o1, E o2) {
+        return o1.compareTo(o2);
+      }
+    };
+
+    return merge(iterators, comp);
+  }
+
+  /**
+   * See {@link #merge(Iterator, Comparator)}.
+   * 
+   * @param <E>
+   * @param iterators
+   *          The underlying iterators.
+   * @return A merged iterable.
+   */
+  public static <E extends Comparable<? super E>> IBuilder<E> merge(
       Iterable<? extends Iterable<E>> iterators) {
     Comparator<E> comp = new Comparator<E>() {
       public int compare(E o1, E o2) {
@@ -323,7 +377,7 @@ public class Itertools {
   }
 
   /**
-   * See {@link #merge(Collection)}
+   * See {@link #merge(Iterator)}
    * 
    * @param <E>
    * @param iterators
@@ -378,19 +432,7 @@ public class Itertools {
   }
 
   /**
-   * Creates an iterable selecting subsets of the provided iterator. See
-   * {@link SlicingIterator}.
-   * 
-   * @param <E>
-   * @param it
-   *          The underlying iterator.
-   * @param start
-   *          The start position. &lt;0 starts at zero.
-   * @param stop
-   *          The stop position. &lt;0 iterates to the end of the <tt>it</it>.
-   * @param by
-   *          The step size. &lt;0 equivalent to a step size of 1.
-   * @return
+   * See {@link #slice(Iterator, int, int, int)}.
    */
   public static <E> IBuilder<E> slice(Iterable<E> it, int start, int stop,
       int by) {
@@ -436,6 +478,18 @@ public class Itertools {
   }
 
   /**
+   * See {@link #zip(Iterator)}.
+   * 
+   * @param <E>
+   * @param iterators
+   * @return
+   */
+  public static <E> IBuilder<List<E>> zip(
+      Iterable<? extends Iterable<E>> iterators) {
+    return zip(iterators.iterator());
+  }
+
+  /**
    * Creates an iterable to iterate over the provided iterators in parallel.
    * Each return List contains the next element from each of the provided
    * iterators in order, or null if that iterator is exhausted. See
@@ -446,7 +500,7 @@ public class Itertools {
    * @return
    */
   public static <E> IBuilder<List<E>> zip(
-      Iterable<? extends Iterable<E>> iterators) {
+      Iterator<? extends Iterable<E>> iterators) {
     return new IBuilder<List<E>>(new ZippingIterator<E>(iterators));
   }
 

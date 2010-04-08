@@ -37,12 +37,16 @@ public class ZippingIterator<E> implements Iterator<List<E>> {
   List<Iterator<E>> iterators;
   ArrayList<E> internalStorage;
 
-  public ZippingIterator(Iterable<? extends Iterable<E>> iterators) {
+  public ZippingIterator(Iterator<? extends Iterable<E>> iterators) {
     this.iterators = new ArrayList<Iterator<E>>();
-    for (Iterable<E> i : iterators) {
-      this.iterators.add(i.iterator());
+    while (iterators.hasNext()) {
+      this.iterators.add(iterators.next().iterator());
     }
     internalStorage = new ArrayList<E>(this.iterators.size());
+  }
+
+  public ZippingIterator(Iterable<? extends Iterable<E>> iterators) {
+    this(iterators.iterator());
   }
 
   public boolean hasNext() {

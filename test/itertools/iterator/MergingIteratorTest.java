@@ -49,7 +49,7 @@ public class MergingIteratorTest {
     }
     Collections.sort(allData, String.CASE_INSENSITIVE_ORDER);
 
-    MergingIterator<String> mit = new MergingIterator<String>(iters,
+    MergingIterator<String> mit = new MergingIterator<String>(iters.iterator(),
         String.CASE_INSENSITIVE_ORDER);
 
     for (int i = 0; i < allData.size(); ++i) {

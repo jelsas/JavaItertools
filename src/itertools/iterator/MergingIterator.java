@@ -31,11 +31,11 @@ import java.util.PriorityQueue;
 public class MergingIterator<E> implements Iterator<E> {
   private PriorityQueue<QueueElement<E>> q;
 
-  public MergingIterator(Iterable<? extends Iterable<E>> iterators,
+  public MergingIterator(Iterator<? extends Iterable<E>> iterators,
       Comparator<? super E> comparator) {
     q = new PriorityQueue<QueueElement<E>>();
-    for (Iterable<E> i : iterators) {
-      Iterator<E> ii = i.iterator();
+    while (iterators.hasNext()) {
+      Iterator<E> ii = iterators.next().iterator();
       if (ii.hasNext()) q.add(new QueueElement<E>(ii, comparator));
     }
   }
