@@ -12,13 +12,14 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools;
 
 import itertools.functions.Condition;
 import itertools.functions.Grouper;
 import itertools.functions.Mapper;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -30,8 +31,12 @@ import java.util.Iterator;
  * 
  * @param <T>
  */
-public class IBuilder<T> implements Iterable<T> {
+public class IBuilder<T> implements Iterable<T>, Iterator<T> {
   private Iterator<T> it;
+
+  public IBuilder(T... t) {
+    this.it = Arrays.asList(t).iterator();
+  }
 
   public IBuilder(Iterable<T> it) {
     this.it = it.iterator();
@@ -43,6 +48,18 @@ public class IBuilder<T> implements Iterable<T> {
 
   public Iterator<T> iterator() {
     return it;
+  }
+
+  public boolean hasNext() {
+    return it.hasNext();
+  }
+
+  public T next() {
+    return it.next();
+  }
+
+  public void remove() {
+    it.remove();
   }
 
   /**
@@ -63,6 +80,17 @@ public class IBuilder<T> implements Iterable<T> {
    */
   public IBuilder<T> dropwhile(final Condition<T> condition) {
     it = Itertools.dropwhile(it, condition);
+    return this;
+  }
+
+  /**
+   * See {@link Itertools.filter}
+   * 
+   * @param keep
+   * @return
+   */
+  public IBuilder<T> filter(final Condition<? super T> keep) {
+    it = Itertools.filter(it, keep);
     return this;
   }
 

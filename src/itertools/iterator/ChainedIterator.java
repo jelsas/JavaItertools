@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.iterator;
 
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class ChainedIterator<E> implements Iterator<E> {
     advanceIterator();
   }
 
-  public ChainedIterator(Collection<? extends Iterator<E>> iterators) {
+  public ChainedIterator(Iterable<? extends Iterator<E>> iterators) {
     this(iterators.iterator());
   }
 

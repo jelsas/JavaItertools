@@ -12,24 +12,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools;
 
 import itertools.functions.Condition;
 import itertools.functions.Grouper;
 import itertools.functions.Mapper;
-import itertools.iterator.ChainedIterator;
-import itertools.iterator.CountingIterator;
-import itertools.iterator.CyclingIterator;
-import itertools.iterator.DropwhileIterator;
-import itertools.iterator.FileLineIterator;
-import itertools.iterator.GroupingIterator;
-import itertools.iterator.MappingIterator;
-import itertools.iterator.MergingIterator;
-import itertools.iterator.RepeatingIterator;
-import itertools.iterator.SlicingIterator;
-import itertools.iterator.TakewhileIterator;
-import itertools.iterator.ZippingIterator;
+import itertools.iterator.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -55,8 +44,8 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IterableIterator<E> chain(Collection<Iterator<E>> iterators) {
-    return new IterableIterator<E>(new ChainedIterator<E>(iterators));
+  public static <E> IBuilder<E> chain(Iterable<? extends Iterator<E>> iterators) {
+    return new IBuilder<E>(new ChainedIterator<E>(iterators));
   }
 
   /**
@@ -66,10 +55,9 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IterableIterator<E> chain(Iterator<E>... iterators) {
-    return chain(Arrays.asList(iterators));
-  }
-
+  // public static <E> IBuilder<E> chain(Iterator<E>... iterators) {
+  // return chain(Arrays.asList(iterators));
+  // }
   /**
    * See {@link #chain(Collection)}.
    * 
@@ -77,9 +65,8 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IterableIterator<E> chain(
-      Iterator<? extends Iterator<E>> iterators) {
-    return new IterableIterator<E>(new ChainedIterator<E>(iterators));
+  public static <E> IBuilder<E> chain(Iterator<? extends Iterator<E>> iterators) {
+    return new IBuilder<E>(new ChainedIterator<E>(iterators));
   }
 
   /**
@@ -89,8 +76,8 @@ public class Itertools {
    *          Starting number.
    * @return
    */
-  public static IterableIterator<Integer> count(int start) {
-    return new IterableIterator<Integer>(new CountingIterator(start));
+  public static IBuilder<Integer> count(int start) {
+    return new IBuilder<Integer>(new CountingIterator(start));
   }
 
   /**
@@ -98,8 +85,8 @@ public class Itertools {
    * 
    * @return
    */
-  public static IterableIterator<Integer> count() {
-    return new IterableIterator<Integer>(new CountingIterator());
+  public static IBuilder<Integer> count() {
+    return new IBuilder<Integer>(new CountingIterator());
   }
 
   /**
@@ -110,8 +97,8 @@ public class Itertools {
    * @param iterator
    * @return
    */
-  public static <E> IterableIterator<E> cycle(Iterator<E> iterator) {
-    return new IterableIterator<E>(new CyclingIterator<E>(iterator));
+  public static <E> IBuilder<E> cycle(Iterator<E> iterator) {
+    return new IBuilder<E>(new CyclingIterator<E>(iterator));
   }
 
   /**
@@ -122,12 +109,31 @@ public class Itertools {
    * @param condition
    * @return
    */
-  public static <E> IterableIterator<E> dropwhile(Iterator<E> iterator,
+  public static <E> IBuilder<E> dropwhile(Iterator<E> iterator,
       final Condition<E> condition) {
-    return new IterableIterator<E>(new DropwhileIterator<E>(iterator) {
+    return new IBuilder<E>(new DropwhileIterator<E>(iterator) {
       @Override
       public boolean condition(E item) {
         return condition.condition(item);
+      }
+    });
+  }
+
+  /**
+   * See {@link FilteringIterator}.
+   * 
+   * @param <E>
+   * @param iterator
+   * @param condition
+   *          Condition object that returns true to keep objects.
+   * @return
+   */
+  public static <E> IBuilder<E> filter(Iterator<E> iterator,
+      final Condition<? super E> keep) {
+    return new IBuilder<E>(new FilteringIterator<E>(iterator) {
+      @Override
+      public boolean keep(E item) {
+        return keep.condition(item);
       }
     });
   }
@@ -145,9 +151,14 @@ public class Itertools {
    *          The grouping function.
    * @return An iterator over groups.
    */
-  public static <E> IterableIterator<Iterator<E>> groupby(Iterator<E> iterator,
+  public static <E> IBuilder<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper) {
-    return groupby(iterator, grouper, Integer.MAX_VALUE);
+    return new IBuilder<Iterator<E>>(new LazyGroupingIterator<E>(iterator) {
+      @Override
+      public boolean group(E e1, E e2) {
+        return grouper.group(e1, e2);
+      }
+    });
   }
 
   /**
@@ -169,9 +180,9 @@ public class Itertools {
    *          be split into more than one group.
    * @return
    */
-  public static <E> IterableIterator<Iterator<E>> groupby(Iterator<E> iterator,
+  public static <E> IBuilder<Iterator<E>> groupby(Iterator<E> iterator,
       final Grouper<E> grouper, int maxGroupSize) {
-    return new IterableIterator<Iterator<E>>(new GroupingIterator<E>(iterator,
+    return new IBuilder<Iterator<E>>(new GroupingIterator<E>(iterator,
         maxGroupSize) {
       @Override
       public boolean group(E e1, E e2) {
@@ -181,25 +192,25 @@ public class Itertools {
   }
 
   /**
-   * Terse utility method for creating an IterableIterator over a collection.
+   * Terse utility method for creating an IBuilder over a collection.
    * 
    * @param <E>
    * @param array
    * @return
    */
-  public static <E> IterableIterator<E> i(Collection<E> c) {
-    return new IterableIterator<E>(c);
+  public static <E> IBuilder<E> i(Collection<E> c) {
+    return new IBuilder<E>(c);
   }
 
   /**
-   * Terse utility method for creating an IterableIterator over an array.
+   * Terse utility method for creating an IBuilder over an array.
    * 
    * @param <E>
    * @param array
    * @return
    */
-  public static <E> IterableIterator<E> i(E[] array) {
-    return new IterableIterator<E>(array);
+  public static <E> IBuilder<E> i(E[] array) {
+    return new IBuilder<E>(array);
   }
 
   /**
@@ -211,7 +222,7 @@ public class Itertools {
    * @param mapper
    * @return
    */
-  public static <I, O> IterableIterator<O> map(Collection<I> collection,
+  public static <I, O> IBuilder<O> map(Collection<I> collection,
       final Mapper<I, O> mapper) {
     return map(collection.iterator(), mapper);
   }
@@ -230,9 +241,9 @@ public class Itertools {
    *          Mapping function.
    * @return An iterator over the output type.
    */
-  public static <I, O> IterableIterator<O> map(Iterator<I> iterator,
+  public static <I, O> IBuilder<O> map(Iterator<I> iterator,
       final Mapper<I, O> mapper) {
-    return new IterableIterator<O>(new MappingIterator<I, O>(iterator) {
+    return new IBuilder<O>(new MappingIterator<I, O>(iterator) {
       @Override
       public O map(I in) {
         return mapper.map(in);
@@ -253,9 +264,9 @@ public class Itertools {
    *          The comparator.
    * @return An merged iterable.
    */
-  public static <E> IterableIterator<E> merge(
+  public static <E> IBuilder<E> merge(
       Collection<? extends Iterator<E>> iterators, Comparator<E> comp) {
-    return new IterableIterator<E>(new MergingIterator<E>(iterators, comp));
+    return new IBuilder<E>(new MergingIterator<E>(iterators, comp));
   }
 
   /**
@@ -269,7 +280,7 @@ public class Itertools {
    *          The underlying iterators.
    * @return A merged iterable.
    */
-  public static <E extends Comparable<E>> IterableIterator<E> merge(
+  public static <E extends Comparable<E>> IBuilder<E> merge(
       Collection<? extends Iterator<E>> iterators) {
     Comparator<E> comp = new Comparator<E>() {
       public int compare(E o1, E o2) {
@@ -287,7 +298,7 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E extends Comparable<E>> IterableIterator<E> merge(
+  public static <E extends Comparable<E>> IBuilder<E> merge(
       Iterator<E>... iterators) {
     return merge(Arrays.asList(iterators));
   }
@@ -301,9 +312,8 @@ public class Itertools {
    * @throws IOException
    *           If an error occurred opening the file.
    */
-  public static IterableIterator<String> open(String filename)
-      throws IOException {
-    return new IterableIterator<String>(new FileLineIterator(filename));
+  public static IBuilder<String> open(String filename) throws IOException {
+    return new IBuilder<String>(new FileLineIterator(filename));
   }
 
   /**
@@ -317,10 +327,9 @@ public class Itertools {
    * @throws IOException
    *           If an error occurred opening the file.
    */
-  public static IterableIterator<String> open(String filename, int bufferSize)
+  public static IBuilder<String> open(String filename, int bufferSize)
       throws IOException {
-    return new IterableIterator<String>(new FileLineIterator(filename,
-        bufferSize));
+    return new IBuilder<String>(new FileLineIterator(filename, bufferSize));
   }
 
   /**
@@ -333,8 +342,8 @@ public class Itertools {
    *          The item.
    * @return
    */
-  public static <E> IterableIterator<E> repeat(E item) {
-    return new IterableIterator<E>(new RepeatingIterator<E>(item));
+  public static <E> IBuilder<E> repeat(E item) {
+    return new IBuilder<E>(new RepeatingIterator<E>(item));
   }
 
   /**
@@ -352,9 +361,9 @@ public class Itertools {
    *          The step size. &lt;0 equivalent to a step size of 1.
    * @return
    */
-  public static <E> IterableIterator<E> slice(Iterator<E> it, int start,
-      int stop, int by) {
-    return new IterableIterator<E>(new SlicingIterator<E>(it, start, stop, by));
+  public static <E> IBuilder<E> slice(Iterator<E> it, int start, int stop,
+      int by) {
+    return new IBuilder<E>(new SlicingIterator<E>(it, start, stop, by));
   }
 
   /**
@@ -365,9 +374,9 @@ public class Itertools {
    * @param condition
    * @return
    */
-  public static <E> IterableIterator<E> takewhile(Iterator<E> iterator,
+  public static <E> IBuilder<E> takewhile(Iterator<E> iterator,
       final Condition<E> condition) {
-    return new IterableIterator<E>(new TakewhileIterator<E>(iterator) {
+    return new IBuilder<E>(new TakewhileIterator<E>(iterator) {
       @Override
       public boolean condition(E item) {
         return condition.condition(item);
@@ -385,9 +394,8 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IterableIterator<List<E>> zip(
-      Collection<Iterator<E>> iterators) {
-    return new IterableIterator<List<E>>(new ZippingIterator<E>(iterators));
+  public static <E> IBuilder<List<E>> zip(Collection<Iterator<E>> iterators) {
+    return new IBuilder<List<E>>(new ZippingIterator<E>(iterators));
   }
 
   /**
@@ -397,7 +405,7 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IterableIterator<List<E>> zip(Iterator<E>... iterators) {
+  public static <E> IBuilder<List<E>> zip(Iterator<E>... iterators) {
     return zip(Arrays.asList(iterators));
   }
 }
