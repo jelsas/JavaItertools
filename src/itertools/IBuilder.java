@@ -50,10 +50,6 @@ public class IBuilder<T> implements Iterable<T> {
     return it;
   }
 
-  public void remove() {
-    it.remove();
-  }
-
   /**
    * See {@link Itertools.cycle}.
    * 
