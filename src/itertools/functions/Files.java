@@ -12,12 +12,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.functions;
 
 import java.io.IOException;
+import java.util.Iterator;
 
-import itertools.IterableIterator;
+import itertools.IBuilder;
 import itertools.iterator.FileLineIterator;
 
 /**
@@ -30,13 +31,12 @@ public class Files {
   /**
    * Opens a filename String as a file.
    */
-  public static final BranchingMapper<String, IterableIterator<String>, String> OPEN = new _openFiles();
+  public static final Mapper<String, Iterator<String>> OPEN = new _openFiles();
 
-  private static class _openFiles implements
-      BranchingMapper<String, IterableIterator<String>, String> {
-    public IterableIterator<String> map(String input) {
+  private static class _openFiles implements Mapper<String, Iterator<String>> {
+    public Iterator<String> map(String input) {
       try {
-        return new IterableIterator<String>(new FileLineIterator(input));
+        return new IBuilder<String>(new FileLineIterator(input));
       } catch (IOException e) {
         return null;
       }
