@@ -38,7 +38,7 @@ public class FileLineIterator extends IteratorWrapper<String> {
 
   /**
    * Returns the next line of the file or null if there are no more lines, or if
-   * an error occurred reading the file. The file is close & cleaned up if an
+   * an error occurred reading the file. The file is closed & cleaned up if an
    * error occurred or the end of the file is reached.
    */
   @Override
