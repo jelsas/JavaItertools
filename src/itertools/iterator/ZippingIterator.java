@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.iterator;
 
 import java.util.ArrayList;
@@ -38,16 +38,18 @@ public class ZippingIterator<E> implements Iterator<List<E>> {
   List<Iterator<E>> iterators;
   ArrayList<E> internalStorage;
 
-  public ZippingIterator(Collection<Iterator<E>> iterators) {
-    this.iterators = new ArrayList<Iterator<E>>(iterators);
-    internalStorage = new ArrayList<E>(iterators.size());
+  public ZippingIterator(Iterable<? extends Iterable<E>> iterators) {
+    this.iterators = new ArrayList<Iterator<E>>();
+    for (Iterable<E> i : iterators) {
+      this.iterators.add(i.iterator());
+    }
+    internalStorage = new ArrayList<E>(this.iterators.size());
   }
 
   public boolean hasNext() {
     // see if at least one of the iterators has next.
     for (Iterator<E> it : iterators) {
-      if (it.hasNext())
-        return true;
+      if (it.hasNext()) return true;
     }
     return false;
   }

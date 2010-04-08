@@ -12,10 +12,9 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.iterator;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -32,11 +31,12 @@ import java.util.PriorityQueue;
 public class MergingIterator<E> implements Iterator<E> {
   private PriorityQueue<QueueElement<E>> q;
 
-  public MergingIterator(Collection<? extends Iterator<E>> iterators,
+  public MergingIterator(Iterable<? extends Iterable<E>> iterators,
       Comparator<? super E> comparator) {
-    q = new PriorityQueue<QueueElement<E>>(iterators.size());
-    for (Iterator<E> i : iterators) {
-      if (i.hasNext()) q.add(new QueueElement<E>(i, comparator));
+    q = new PriorityQueue<QueueElement<E>>();
+    for (Iterable<E> i : iterators) {
+      Iterator<E> ii = i.iterator();
+      if (ii.hasNext()) q.add(new QueueElement<E>(ii, comparator));
     }
   }
 

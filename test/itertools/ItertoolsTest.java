@@ -34,16 +34,16 @@ import org.junit.Test;
 public class ItertoolsTest {
   String[][] data = { { "a", "b", "c" }, { "1", "2", "3" },
       { "w", "x", "y", "z" } };
-  List<Iterator<String>> iters;
+  List<Iterable<String>> iters;
   int totalNumElements;
 
   @Before
   public void setUp() throws Exception {
     totalNumElements = 0;
-    iters = new ArrayList<Iterator<String>>(data.length);
+    iters = new ArrayList<Iterable<String>>(data.length);
     for (int i = 0; i < data.length; ++i) {
       totalNumElements += data[i].length;
-      iters.add(Arrays.asList(data[i]).iterator());
+      iters.add(Arrays.asList(data[i]));
     }
   }
 
@@ -61,21 +61,25 @@ public class ItertoolsTest {
     assertEquals(totalNumElements, idx);
   }
 
-  /*
-   * @SuppressWarnings("unchecked")
-   * 
-   * @Test public void testChainIteratorOfEArray() { ArrayList<String> chained =
-   * new ArrayList<String>(); for (String[] s : data) {
-   * chained.addAll(Arrays.asList(s)); } int idx = 0; for (String s :
-   * chain(iters.get(0), iters.get(1), iters.get(2))) {
-   * assertEquals(chained.get(idx), s); ++idx; } assertEquals(totalNumElements,
-   * idx); }
-   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testChainIteratorOfEArray() {
+    ArrayList<String> chained = new ArrayList<String>();
+    for (String[] s : data) {
+      chained.addAll(Arrays.asList(s));
+    }
+    int idx = 0;
+    for (String s : chain(iters.get(0), iters.get(1), iters.get(2))) {
+      assertEquals(chained.get(idx), s);
+      ++idx;
+    }
+    assertEquals(totalNumElements, idx);
+  }
 
   @Test
   public void testCycle() {
     int idx = 0;
-    for (String s : cycle(iters.get(0))) {
+    for (String s : cycle(iters.get(0).iterator())) {
       assertEquals(data[0][idx % data[0].length], s);
       if (++idx > 100) break;
     }

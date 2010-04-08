@@ -15,7 +15,6 @@
  */
 package itertools.iterator;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -31,17 +30,13 @@ public class ChainedIterator<E> implements Iterator<E> {
   private LinkedList<Iterator<E>> iterator_chain = new LinkedList<Iterator<E>>();
   private E next;
 
-  public ChainedIterator(Iterator<? extends Iterator<E>> iterators) {
+  public ChainedIterator(Iterator<? extends Iterable<E>> iterators) {
     while (iterators.hasNext()) {
-      Iterator<E> i = iterators.next();
+      Iterable<E> i = iterators.next();
       if (i == null) continue;
-      iterator_chain.add(i);
+      iterator_chain.add(i.iterator());
     }
     advanceIterator();
-  }
-
-  public ChainedIterator(Iterable<? extends Iterator<E>> iterators) {
-    this(iterators.iterator());
   }
 
   public boolean hasNext() {
@@ -54,8 +49,9 @@ public class ChainedIterator<E> implements Iterator<E> {
   }
 
   public void remove() {
-    if (iterator_chain.isEmpty()) { throw new IllegalStateException(); }
-    iterator_chain.getFirst().remove();
+    // We can't suport this since its possible the last returned item is from an
+    // interator we no longer have a handle on.
+    throw new UnsupportedOperationException();
   }
 
   /**

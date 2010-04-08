@@ -44,8 +44,8 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IBuilder<E> chain(Iterable<? extends Iterator<E>> iterators) {
-    return new IBuilder<E>(new ChainedIterator<E>(iterators));
+  public static <E> IBuilder<E> chain(Iterable<? extends Iterable<E>> iterators) {
+    return new IBuilder<E>(new ChainedIterator<E>(iterators.iterator()));
   }
 
   /**
@@ -55,9 +55,10 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  // public static <E> IBuilder<E> chain(Iterator<E>... iterators) {
-  // return chain(Arrays.asList(iterators));
-  // }
+  public static <E> IBuilder<E> chain(Iterable<E>... iterators) {
+    return chain(Arrays.asList(iterators));
+  }
+
   /**
    * See {@link #chain(Collection)}.
    * 
@@ -65,7 +66,7 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IBuilder<E> chain(Iterator<? extends Iterator<E>> iterators) {
+  public static <E> IBuilder<E> chain(Iterator<? extends Iterable<E>> iterators) {
     return new IBuilder<E>(new ChainedIterator<E>(iterators));
   }
 
@@ -87,6 +88,18 @@ public class Itertools {
    */
   public static IBuilder<Integer> count() {
     return new IBuilder<Integer>(new CountingIterator());
+  }
+
+  /**
+   * Creates an Iterable that cycles through the provided iterator indefinitely.
+   * See {@link CyclingIterator}.
+   * 
+   * @param <E>
+   * @param iterator
+   * @return
+   */
+  public static <E> IBuilder<E> cycle(Iterable<E> iterator) {
+    return new IBuilder<E>(new CyclingIterator<E>(iterator.iterator()));
   }
 
   /**
@@ -136,6 +149,24 @@ public class Itertools {
         return keep.condition(item);
       }
     });
+  }
+
+  /**
+   * Creates an Iterable over sequential groups of elements in the provided
+   * iterator. The {@link Grouper.group(Object, Object)} function defines
+   * whether adjascent elements in the iterator belong in the same group.
+   * Similar to unix's <tt>uniq</tt> command. See {@link GroupingIterator}.
+   * 
+   * @param <E>
+   * @param iterator
+   *          The underlying iterator.
+   * @param grouper
+   *          The grouping function.
+   * @return An iterator over groups.
+   */
+  public static <E> IBuilder<Iterator<E>> groupby(Iterable<E> iterator,
+      final Grouper<E> grouper) {
+    return groupby(iterator.iterator(), grouper);
   }
 
   /**
@@ -222,7 +253,7 @@ public class Itertools {
    * @param mapper
    * @return
    */
-  public static <I, O> IBuilder<O> map(Collection<I> collection,
+  public static <I, O> IBuilder<O> map(Iterable<I> collection,
       final Mapper<I, O> mapper) {
     return map(collection.iterator(), mapper);
   }
@@ -265,7 +296,7 @@ public class Itertools {
    * @return An merged iterable.
    */
   public static <E> IBuilder<E> merge(
-      Collection<? extends Iterator<E>> iterators, Comparator<E> comp) {
+      Iterable<? extends Iterable<E>> iterators, Comparator<E> comp) {
     return new IBuilder<E>(new MergingIterator<E>(iterators, comp));
   }
 
@@ -281,7 +312,7 @@ public class Itertools {
    * @return A merged iterable.
    */
   public static <E extends Comparable<E>> IBuilder<E> merge(
-      Collection<? extends Iterator<E>> iterators) {
+      Iterable<? extends Iterable<E>> iterators) {
     Comparator<E> comp = new Comparator<E>() {
       public int compare(E o1, E o2) {
         return o1.compareTo(o2);
@@ -299,7 +330,7 @@ public class Itertools {
    * @return
    */
   public static <E extends Comparable<E>> IBuilder<E> merge(
-      Iterator<E>... iterators) {
+      Iterable<E>... iterators) {
     return merge(Arrays.asList(iterators));
   }
 
@@ -361,6 +392,26 @@ public class Itertools {
    *          The step size. &lt;0 equivalent to a step size of 1.
    * @return
    */
+  public static <E> IBuilder<E> slice(Iterable<E> it, int start, int stop,
+      int by) {
+    return slice(it.iterator(), start, stop, by);
+  }
+
+  /**
+   * Creates an iterable selecting subsets of the provided iterator. See
+   * {@link SlicingIterator}.
+   * 
+   * @param <E>
+   * @param it
+   *          The underlying iterator.
+   * @param start
+   *          The start position. &lt;0 starts at zero.
+   * @param stop
+   *          The stop position. &lt;0 iterates to the end of the <tt>it</it>.
+   * @param by
+   *          The step size. &lt;0 equivalent to a step size of 1.
+   * @return
+   */
   public static <E> IBuilder<E> slice(Iterator<E> it, int start, int stop,
       int by) {
     return new IBuilder<E>(new SlicingIterator<E>(it, start, stop, by));
@@ -394,7 +445,8 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IBuilder<List<E>> zip(Collection<Iterator<E>> iterators) {
+  public static <E> IBuilder<List<E>> zip(
+      Iterable<? extends Iterable<E>> iterators) {
     return new IBuilder<List<E>>(new ZippingIterator<E>(iterators));
   }
 
@@ -405,7 +457,7 @@ public class Itertools {
    * @param iterators
    * @return
    */
-  public static <E> IBuilder<List<E>> zip(Iterator<E>... iterators) {
+  public static <E> IBuilder<List<E>> zip(Iterable<E>... iterators) {
     return zip(Arrays.asList(iterators));
   }
 }

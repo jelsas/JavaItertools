@@ -37,12 +37,12 @@ public class ChunkingIteratorTest {
    */
   @Test
   public void testChunkingIterator() {
-    Iterator<Integer> count = Itertools.count();
-    count = Itertools.slice(count, 0, 100, 1);
+    Iterable<Integer> count = Itertools.count();
+    count = Itertools.slice(count.iterator(), 0, 100, 1);
 
     int chunkSize = 7;
-    ChunkingIterator<Integer> chunks = new ChunkingIterator<Integer>(count,
-        chunkSize);
+    ChunkingIterator<Integer> chunks = new ChunkingIterator<Integer>(count
+        .iterator(), chunkSize);
 
     int lastValue = -1;
     while (chunks.hasNext()) {

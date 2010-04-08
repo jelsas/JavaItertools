@@ -31,7 +31,7 @@ import java.util.Iterator;
  * 
  * @param <T>
  */
-public class IBuilder<T> implements Iterable<T>, Iterator<T> {
+public class IBuilder<T> implements Iterable<T> {
   private Iterator<T> it;
 
   public IBuilder(T... t) {
@@ -50,14 +50,6 @@ public class IBuilder<T> implements Iterable<T>, Iterator<T> {
     return it;
   }
 
-  public boolean hasNext() {
-    return it.hasNext();
-  }
-
-  public T next() {
-    return it.next();
-  }
-
   public void remove() {
     it.remove();
   }
@@ -68,8 +60,7 @@ public class IBuilder<T> implements Iterable<T>, Iterator<T> {
    * @return
    */
   public IBuilder<T> cycle() {
-    it = Itertools.cycle(it);
-    return this;
+    return Itertools.cycle(it);
   }
 
   /**
@@ -79,8 +70,7 @@ public class IBuilder<T> implements Iterable<T>, Iterator<T> {
    * @return
    */
   public IBuilder<T> dropwhile(final Condition<T> condition) {
-    it = Itertools.dropwhile(it, condition);
-    return this;
+    return Itertools.dropwhile(it, condition);
   }
 
   /**
@@ -90,8 +80,7 @@ public class IBuilder<T> implements Iterable<T>, Iterator<T> {
    * @return
    */
   public IBuilder<T> filter(final Condition<? super T> keep) {
-    it = Itertools.filter(it, keep);
-    return this;
+    return Itertools.filter(it, keep);
   }
 
   /**
@@ -140,8 +129,7 @@ public class IBuilder<T> implements Iterable<T>, Iterator<T> {
    * @return
    */
   public IBuilder<T> slice(int start, int stop, int by) {
-    it = Itertools.slice(it, start, stop, by);
-    return this;
+    return Itertools.slice(it, start, stop, by);
   }
 
   /**
@@ -151,8 +139,7 @@ public class IBuilder<T> implements Iterable<T>, Iterator<T> {
    * @return
    */
   public IBuilder<T> takewhile(final Condition<T> condition) {
-    it = Itertools.takewhile(it, condition);
-    return this;
+    return Itertools.takewhile(it, condition);
   }
 
 }

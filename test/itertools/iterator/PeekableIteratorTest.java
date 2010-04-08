@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.iterator;
 
 import static org.junit.Assert.*;
@@ -27,7 +27,7 @@ public class PeekableIteratorTest {
 
   @Test
   public void testPeekableIterator() {
-    Iterator<Integer> it = Itertools.count();
+    Iterator<Integer> it = Itertools.count().iterator();
     it = Itertools.slice(it, 0, 100, 1).iterator();
     PeekableIterator<Integer> pit = new PeekableIterator<Integer>(it);
 

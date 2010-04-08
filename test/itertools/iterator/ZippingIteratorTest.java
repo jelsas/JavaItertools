@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.iterator;
 
 import static org.junit.Assert.*;
@@ -28,13 +28,13 @@ import org.junit.Test;
 public class ZippingIteratorTest {
   String[][] data = { { "a", "b", "c" }, { "1", "2", "3" },
       { "w", "x", "y", "z" } };
-  List<Iterator<String>> iters;
+  List<Iterable<String>> iters;
 
   @Before
   public void setUp() throws Exception {
-    iters = new ArrayList<Iterator<String>>(data.length);
+    iters = new ArrayList<Iterable<String>>(data.length);
     for (int i = 0; i < data.length; ++i) {
-      iters.add(Arrays.asList(data[i]).iterator());
+      iters.add(Arrays.asList(data[i]));
     }
   }
 

@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.iterator;
 
 import static org.junit.Assert.*;
@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -29,13 +28,13 @@ import org.junit.Test;
 public class MergingIteratorTest {
   String[][] data = { { "a", "d", "g", "j" }, { "b", "e", "h", "k" },
       { "c", "f", "i", "l" }, { "m" } };
-  List<Iterator<String>> iters;
+  List<Iterable<String>> iters;
 
   @Before
   public void setUp() throws Exception {
-    iters = new ArrayList<Iterator<String>>();
+    iters = new ArrayList<Iterable<String>>();
     for (String[] s : data) {
-      iters.add(Arrays.asList(s).iterator());
+      iters.add(Arrays.asList(s));
     }
   }
 

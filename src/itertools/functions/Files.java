@@ -31,10 +31,10 @@ public class Files {
   /**
    * Opens a filename String as a file.
    */
-  public static final Mapper<String, Iterator<String>> OPEN = new _openFiles();
+  public static final Mapper<String, Iterable<String>> OPEN = new _openFiles();
 
-  private static class _openFiles implements Mapper<String, Iterator<String>> {
-    public Iterator<String> map(String input) {
+  private static class _openFiles implements Mapper<String, Iterable<String>> {
+    public Iterable<String> map(String input) {
       try {
         return new IBuilder<String>(new FileLineIterator(input));
       } catch (IOException e) {
