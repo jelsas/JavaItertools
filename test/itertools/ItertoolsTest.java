@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools;
 
 import static itertools.Itertools.*;
@@ -61,20 +61,16 @@ public class ItertoolsTest {
     assertEquals(totalNumElements, idx);
   }
 
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testChainIteratorOfEArray() {
-    ArrayList<String> chained = new ArrayList<String>();
-    for (String[] s : data) {
-      chained.addAll(Arrays.asList(s));
-    }
-    int idx = 0;
-    for (String s : chain(iters.get(0), iters.get(1), iters.get(2))) {
-      assertEquals(chained.get(idx), s);
-      ++idx;
-    }
-    assertEquals(totalNumElements, idx);
-  }
+  /*
+   * @SuppressWarnings("unchecked")
+   * 
+   * @Test public void testChainIteratorOfEArray() { ArrayList<String> chained =
+   * new ArrayList<String>(); for (String[] s : data) {
+   * chained.addAll(Arrays.asList(s)); } int idx = 0; for (String s :
+   * chain(iters.get(0), iters.get(1), iters.get(2))) {
+   * assertEquals(chained.get(idx), s); ++idx; } assertEquals(totalNumElements,
+   * idx); }
+   */
 
   @Test
   public void testCycle() {
