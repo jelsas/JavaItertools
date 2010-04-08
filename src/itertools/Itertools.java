@@ -37,6 +37,54 @@ import java.util.List;
 public class Itertools {
 
   /**
+   * Test the condition on the elements of the iterator.
+   * 
+   * @param <E>
+   * @param it
+   *          The iterator
+   * @param c
+   *          The condition
+   * @return True if the condition holds for all elements, false otherwise.
+   */
+  public static <E> boolean all(Iterator<E> it, final Condition<E> c) {
+    while (it.hasNext()) {
+      if (!c.condition(it.next())) { return false; }
+    }
+    return true;
+  }
+
+  /**
+   * See {@link #all(Iterator, Condition)}.
+   */
+  public static <E> boolean all(Iterable<E> it, final Condition<E> c) {
+    return all(it.iterator(), c);
+  }
+
+  /**
+   * Test the condition on the elements of the iterator.
+   * 
+   * @param <E>
+   * @param it
+   *          The iterator
+   * @param c
+   *          The condition
+   * @return True if the condition holds for any element, false otherwise.
+   */
+  public static <E> boolean any(Iterator<E> it, final Condition<E> c) {
+    while (it.hasNext()) {
+      if (c.condition(it.next())) { return true; }
+    }
+    return false;
+  }
+
+  /**
+   * See {@link #any(Iterator, Condition)}.
+   */
+  public static <E> boolean any(Iterable<E> it, final Condition<E> c) {
+    return any(it.iterator(), c);
+  }
+
+  /**
    * Creates an Iterable to chain the provided iterator collection together. See
    * {@link ChainedIterator}.
    * 
@@ -141,7 +189,8 @@ public class Itertools {
    * 
    * @param <E>
    * @param iterator
-   * @param keep The filtering condition
+   * @param keep
+   *          The filtering condition
    * @return An iterator with some elements filtered.
    */
   public static <E> IBuilder<E> filter(Iterator<E> iterator,

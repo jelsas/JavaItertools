@@ -17,6 +17,7 @@ package itertools;
 
 import static itertools.Itertools.*;
 
+import itertools.functions.Condition;
 import itertools.functions.Grouper;
 import itertools.functions.Mapper;
 
@@ -45,6 +46,32 @@ public class ItertoolsTest {
       totalNumElements += data[i].length;
       iters.add(Arrays.asList(data[i]));
     }
+  }
+
+  @Test
+  public void testAll() {
+    Condition<String> isAlpha = new Condition<String>() {
+      public boolean condition(String item) {
+        return Character.isLetter(item.charAt(0));
+      }
+    };
+    assertTrue(all(iters.get(0), isAlpha));
+    assertFalse(all(iters.get(1), isAlpha));
+    assertTrue(all(iters.get(2), isAlpha));
+    assertFalse(all(chain(iters), isAlpha));
+  }
+
+  @Test
+  public void testAny() {
+    Condition<String> isAlpha = new Condition<String>() {
+      public boolean condition(String item) {
+        return Character.isLetter(item.charAt(0));
+      }
+    };
+    assertTrue(any(iters.get(0), isAlpha));
+    assertFalse(any(iters.get(1), isAlpha));
+    assertTrue(any(iters.get(2), isAlpha));
+    assertTrue(any(chain(iters), isAlpha));
   }
 
   @Test
