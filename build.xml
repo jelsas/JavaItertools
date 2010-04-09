@@ -1,0 +1,61 @@
+<project name="JavaItertools" default="dist" basedir=".">
+	<description>
+        JavaItertools - A port of Python's Itertools to Java.
+    </description>
+	<property name="src" location="src" />
+	<property name="bin" location="bin" />
+	<property name="test" location="test" />
+	<property name="testbin" location="testbin" />
+	<property name="testout" location="testout" />
+	<property name="dist" location="dist" />
+	<property name="doc" location="doc" />
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${bin}" />
+		<mkdir dir="${testbin}" />
+		<mkdir dir="${testout}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<javac srcdir="${src}" destdir="${bin}" />
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution">
+		<mkdir dir="${dist}" />
+		<jar jarfile="${dist}/JavaItertools-${DSTAMP}.jar" basedir="${bin}" />
+	</target>
+
+	<target name="doc">
+		<javadoc access="public" author="true" destdir="${doc}" doctitle="JavaItertools" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="src" splitindex="true" use="true" version="true" />
+	</target>
+
+	<target name="compile-test" depends="compile" description="compile the test classes">
+		<javac srcdir="${test}" destdir="${testbin}">
+			<classpath path="lib/junit-4.8.1.jar:${bin}:${testbin}" />
+		</javac>
+	</target>
+
+	<target name="test" depends="compile-test" description="run the tests">
+		<junit printsummary="yes">
+			<classpath path="${bin}:${testbin}" />
+			<formatter type="xml"/>
+			<batchtest todir="${testout}">
+				<fileset dir="${testbin}">
+					<!-- Need to avoid including generated inner class .class fies -->
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="clean" description="clean up">
+		<delete dir="${bin}" />
+		<delete dir="${testbin}" />
+		<delete dir="${testout}" />
+		<delete dir="${dist}" />
+		<delete dir="${doc}" />
+	</target>
+</project>
