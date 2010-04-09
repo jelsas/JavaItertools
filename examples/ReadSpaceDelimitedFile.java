@@ -59,7 +59,7 @@ public class ReadSpaceDelimitedFile {
 
     // Finally, iterate over these string arrays.
     // Note: Nothing is read from the file until this iteration starts.
-    for (String[] s : splitLines) {
+    for (@SuppressWarnings("unused") String[] s : splitLines) {
       // do something.
     }
   }
@@ -89,7 +89,7 @@ public class ReadSpaceDelimitedFile {
 
     // Finally, iterate over these string arrays.
     // Note: Nothing is read from the file until this iteration starts.
-    for (String[] s : lines) {
+    for (@SuppressWarnings("unused") String[] s : lines) {
       // do something.
     }
   }

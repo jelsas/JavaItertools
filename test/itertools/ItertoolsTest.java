@@ -208,6 +208,7 @@ public class ItertoolsTest {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testZipIteratorOfEArray() {
     int group = 0;
