@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package itertools.iterator;
 
 import static org.junit.Assert.*;
@@ -32,6 +32,7 @@ public class FileLineIteratorTest {
   @Before
   public void setUp() throws Exception {
     tempFile = File.createTempFile(this.getClass().getName(), null);
+    tempFile.deleteOnExit();
     BufferedWriter out = new BufferedWriter(new FileWriter(tempFile));
     for (String l : lines) {
       out.write(l);
