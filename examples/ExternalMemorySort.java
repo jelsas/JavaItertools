@@ -34,7 +34,8 @@ import itertools.iterator.FileLineIterator;
  * direct usage of an iterator decorator {@link EnumeratingIterator} (1) as well
  * as file merging via {@link Itertools#merge(Iterable)} (2).
  * 
- * Note: this is not intended to be a high-performance sorting routine:
+ * Note: this is not intended to be a high-performance or flexible sorting
+ * routine:
  * 
  * - it arbitrarily flushes the interal buffer every BUFFER_LINES lines.
  * Ideally, we'd like to do something that pays more attention to the actual
@@ -44,6 +45,8 @@ import itertools.iterator.FileLineIterator;
  * 
  * - it might run out of memory if many, many temporary files must be created,
  * or lines in the input are extremely long.
+ * 
+ * - it only supports ascending lexographic sort.
  * 
  * @author jelsas
  * 
@@ -87,15 +90,13 @@ public class ExternalMemorySort {
       // If we've just written to the last position in the buffer, sort and dump
       // to a temp file
       if (bufferIndex == BUFFER_LINES - 1) {
-        Arrays.sort(buffer);
-        tempFiles.add(writeToTempfile(buffer, buffer.length));
+        tempFiles.add(sortAndDumpToTmpFile(buffer, buffer.length));
       }
     }
 
     // Sort and dump the remaining data
     if (bufferIndex < BUFFER_LINES - 1) {
-      Arrays.sort(buffer, 0, bufferIndex + 1);
-      tempFiles.add(writeToTempfile(buffer, bufferIndex + 1));
+      tempFiles.add(sortAndDumpToTmpFile(buffer, bufferIndex + 1));
     }
 
     System.out.println("Created " + tempFiles.size() + " temporary files.");
@@ -118,8 +119,9 @@ public class ExternalMemorySort {
   /**
    * Writes the data to a temp file & returns the filename.
    */
-  private String writeToTempfile(String[] data, int endIndex)
+  private String sortAndDumpToTmpFile(String[] data, int endIndex)
       throws IOException {
+    Arrays.sort(data, 0, endIndex + 1);
     File f = File.createTempFile(this.getClass().getName(), ".tmp");
     f.deleteOnExit();
     BufferedWriter fout = new BufferedWriter(new FileWriter(f));
