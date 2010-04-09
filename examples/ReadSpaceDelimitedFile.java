@@ -14,14 +14,13 @@
    limitations under the License.
 
  */
-
 import static itertools.Itertools.*;
 import itertools.IBuilder;
 import itertools.functions.Condition;
 import itertools.functions.Strings;
 
 /**
- * JavaItertools examples.
+ * JavaItertools examples showing {@link IBuilder} usage.
  * 
  * @author jelsas
  * 
