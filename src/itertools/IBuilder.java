@@ -18,9 +18,12 @@ package itertools;
 import itertools.functions.Condition;
 import itertools.functions.Grouper;
 import itertools.functions.Mapper;
+import itertools.iterator.PeekableIterator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A utility class to help building iterators. Most of these methods provide the
@@ -44,6 +47,19 @@ public class IBuilder<T> implements Iterable<T> {
 
   public IBuilder(Iterator<T> it) {
     this.it = it;
+  }
+
+  public List<T> list() {
+    List<T> l = new ArrayList<T>();
+    for (T t : this) {
+      l.add(t);
+    }
+    return l;
+  }
+
+  public T peek() {
+    if (!(it instanceof PeekableIterator)) it = new PeekableIterator<T>(it);
+    return ((PeekableIterator<T>) it).peek();
   }
 
   public Iterator<T> iterator() {
