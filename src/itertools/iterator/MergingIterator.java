@@ -24,6 +24,9 @@ import java.util.PriorityQueue;
  * Merges a set of iterators together according the comparator. It is assumed
  * that the provided iterators are already in sorted order.
  * 
+ * This merging algorithm was stolen from <a href="http://code.google.com/p/externalsortinginjava/source/browse/trunk/src/main/java/com/google/code/externalsorting/ExternalSort.java"
+ * > externalsortinginjava</a>.
+ * 
  * @author jelsas
  * 
  * @param <E>
