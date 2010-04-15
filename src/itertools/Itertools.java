@@ -17,14 +17,17 @@ package itertools;
 
 import itertools.functions.Condition;
 import itertools.functions.Grouper;
+import itertools.functions.LookupMapper;
 import itertools.functions.Mapper;
 import itertools.iterator.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A collection of static methods to aid creation of specialized iterators. All
@@ -289,6 +292,66 @@ public class Itertools {
   }
 
   /**
+   * Similar to {@link #lookup(Iterable, Map, Object)} but maps to null if an
+   * input element is missing.
+   */
+  public static <I, O> IBuilder<O> lookup(Iterable<I> collection,
+      final Map<I, O> map) {
+    return lookup(collection.iterator(), map);
+  }
+
+  /**
+   * Maps each element of the iterable to the corresponding value in the
+   * provided map, or the default value if missing.
+   * 
+   * @param <I>
+   *          Input type.
+   * @param <O>
+   *          Output type.
+   * @param collection
+   *          The input iterable
+   * @param map
+   *          The map from input to output types.
+   * @param defaultValue
+   *          The value to return if an input object is missing from the map.
+   * @return An interable over output types.
+   */
+  public static <I, O> IBuilder<O> lookup(Iterable<I> collection,
+      final Map<I, O> map, O defaultValue) {
+    return lookup(collection.iterator(), map, defaultValue);
+  }
+
+  /**
+   * Similar to {@link #lookup(Iterator, Map, Object)} but maps to null if an
+   * input element is missing.
+   */
+  public static <I, O> IBuilder<O> lookup(Iterator<I> collection,
+      final Map<I, O> map) {
+    return lookup(collection, map, null);
+  }
+
+  /**
+   * Maps each element of the iterable to the corresponding value in the
+   * provided map, or the default value if missing.
+   * 
+   * @param <I>
+   *          Input type.
+   * @param <O>
+   *          Output type.
+   * @param collection
+   *          The input iterable
+   * @param map
+   *          The map from input to output types.
+   * @param defaultValue
+   *          The value to return if an input object is missing from the map.
+   * @return An interable over output types.
+   */
+  public static <I, O> IBuilder<O> lookup(Iterator<I> collection,
+      final Map<I, O> map, O defaultValue) {
+    return map(collection, new LookupMapper<I, O>(map, defaultValue));
+  }
+
+  /**
    * See {@link #map(Iterator, Mapper)}.
    */
   public static <I, O> IBuilder<O> map(Iterable<I> collection,
@@ -388,6 +451,35 @@ public class Itertools {
   public static <E extends Comparable<E>> IBuilder<E> merge(
       Iterable<E>... iterators) {
     return merge(Arrays.asList(iterators));
+  }
+
+  /**
+   * Opens the specified file for reading. See {@link FileLineIterator}.
+   * 
+   * @param filename
+   *          The file to open.
+   * @return An iterable over lines in the file.
+   * @throws IOException
+   *           If an error occurred opening the file.
+   */
+  public static IBuilder<String> open(File file) throws IOException {
+    return new IBuilder<String>(new FileLineIterator(file));
+  }
+
+  /**
+   * Opens the specified file for reading. See {@link FileLineIterator}.
+   * 
+   * @param filename
+   *          The file to open.
+   * @param bufferSize
+   *          Buffer size of underlying file buffer.
+   * @return An iterable over lines in the file.
+   * @throws IOException
+   *           If an error occurred opening the file.
+   */
+  public static IBuilder<String> open(File file, int bufferSize)
+      throws IOException {
+    return new IBuilder<String>(new FileLineIterator(file, bufferSize));
   }
 
   /**

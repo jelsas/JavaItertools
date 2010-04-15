@@ -16,6 +16,7 @@
 package itertools.iterator;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -27,6 +28,14 @@ import java.io.IOException;
  */
 public class FileLineIterator extends IteratorWrapper<String> {
   BufferedReader in;
+
+  public FileLineIterator(File file) throws IOException {
+    in = new BufferedReader(new FileReader(file));
+  }
+
+  public FileLineIterator(File file, int bufferSize) throws IOException {
+    in = new BufferedReader(new FileReader(file), bufferSize);
+  }
 
   public FileLineIterator(String filename) throws IOException {
     in = new BufferedReader(new FileReader(filename));

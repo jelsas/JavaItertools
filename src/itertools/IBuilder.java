@@ -17,6 +17,7 @@ package itertools;
 
 import itertools.functions.Condition;
 import itertools.functions.Grouper;
+import itertools.functions.LookupMapper;
 import itertools.functions.Mapper;
 import itertools.iterator.PeekableIterator;
 
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A utility class to help building iterators. Most of these methods provide the
@@ -106,6 +108,20 @@ public class IBuilder<T> implements Iterable<T> {
    */
   public <O> IBuilder<O> map(final Mapper<T, O> mapper) {
     return Itertools.map(it, mapper);
+  }
+
+  /**
+   * See {@link Itertools#lookup(Iterable, Map)}.
+   */
+  public <O> IBuilder<O> lookup(final Map<T, O> map) {
+    return Itertools.lookup(it, map);
+  }
+  
+  /**
+   * See {@link Itertools#lookup(Iterable, Map, Object)}.
+   */
+  public <O> IBuilder<O> lookup(final Map<T, O> map, O defaultValue) {
+    return Itertools.lookup(it, map, defaultValue);
   }
 
   /**
