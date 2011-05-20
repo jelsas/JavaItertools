@@ -44,7 +44,7 @@ public class ReadSpaceDelimitedFile {
     // Convert to lower-case
     lines = lines.map(Strings.LOWER);
 
-    // Skip empth lines and lines starting with "#". Check for null
+    // Skip empty lines and lines starting with "#". Check for null
     // in case something happened to the underlying file reader.
     lines = lines.filter(new Condition<String>() {
       public boolean condition(String line) {
